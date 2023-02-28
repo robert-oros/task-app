@@ -50,6 +50,7 @@ func editBoard(w http.ResponseWriter, r *http.Request){
 	}
 
 }
+
 func addBoard(w http.ResponseWriter, r *http.Request) {
 	var b Board
 	err := json.NewDecoder(r.Body).Decode(&b)
@@ -74,17 +75,15 @@ func editList(w http.ResponseWriter, r *http.Request) {
 			board := database[i]
 			lists := board.lists
 
-			fmt.Println(lists)
 
 
-			// for i := 0; i < len(lists); i++ {
-				
-
-			// 	fmt.Println(lists[i])
-			// }
+			for i := 0; i < len(lists); i++ {
+				listId := lists[i].listId
+			}
 		}
 	}
 }
+
 
 func main() {
 	init_database()
@@ -93,7 +92,7 @@ func main() {
 	http.HandleFunc("/add_board", addBoard)
 	http.HandleFunc("remove_board/", delBoard)
 	http.HandleFunc("edit_board", editBoard)
-	http.HandleFunc("/", editList)
+	http.HandleFunc("/edit_list", editList)
 
 	if err := http.ListenAndServe(":8081", nil); err != nil {
 		log.Fatal(err)
