@@ -60,7 +60,7 @@ func addBoard(w http.ResponseWriter, r *http.Request) {
 	}
 	database = append(database, b)
 	fmt.Fprintf(w, "Board: %+v\n", b)
-	fmt.Fprintf(w, "database: %+v", database)
+	// fmt.Fprintf(w, "database: %+v", database)
 }
 
 func delBoard(w http.ResponseWriter, r *http.Request) {
