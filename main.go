@@ -1,28 +1,25 @@
 package main
 
 import (
-	"container/list"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
-
-	"github.com/aws/aws-sdk-go/service/appregistry"
 )
 
 type Card struct {
-	id   int
+	cardId   int
 	text string
 }
 
 type List struct {
-	id    int
+	listId 	int
 	title string
 	cards []Card
 }
 
 type Board struct {
-	id    int
+	boardId    int
 	Name  string
 	lists []List
 }
@@ -30,14 +27,14 @@ type Board struct {
 var database = []Board{};
 
 func init_database() {
-	card1 := Card{id: 1, text: "Test"}
-	card2 := Card{id: 2, text: "Test"}
-	card3 := Card{id: 3, text: "Test"}
+	card1 := Card{cardId: 1, text: "Test"}
+	card2 := Card{cardId: 2, text: "Test"}
+	card3 := Card{cardId: 3, text: "Test"}
 
-	list1 := List{id: 1, title: "test", cards: []Card{card1, card2, card3}}
-	list2 := List{id: 2, title: "test", cards: []Card{card1, card2, card3}}
+	list1 := List{listId: 1, title: "test", cards: []Card{card1, card2, card3}}
+	list2 := List{listId: 2, title: "test", cards: []Card{card1, card2, card3}}
 
-	board := Board{id: 1, Name: "Test", lists: []List{list1, list2}}
+	board := Board{boardId: 1, Name: "Test", lists: []List{list1, list2}}
 
 	database = append(database, board)
 }
@@ -58,10 +55,20 @@ func delBoard(w http.ResponseWriter, r *http.Request) {
 
 func editList(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		id := r.URL.Query().Get("id")
+		// id := r.URL.Query().Get("id")
 
 		for i := 0; i < len(database); i++ {
-			fmt.Println(database[i])
+			board := database[i]
+			lists := board.lists
+
+			fmt.Println(lists)
+
+
+			// for i := 0; i < len(lists); i++ {
+				
+
+			// 	fmt.Println(lists[i])
+			// }
 		}
 	}
 }
