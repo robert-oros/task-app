@@ -6,23 +6,25 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+
+	valid "github.com/asaskevich/govalidator"
 )
 
 type Card struct {
-	CardId int 		`json:"id"`
-	Text   string 	`json:"text"`
+	CardId int    `json:"id"`
+	Text   string `json:"text"`
 }
 
 type List struct {
-	ListId int		`json:"id"`
-	Title  string	`json:"title"`
-	Cards  []Card	`json:"cards"`
+	ListId int    `json:"id"`
+	Title  string `json:"title"`
+	Cards  []Card `json:"cards"`
 }
 
 type Board struct {
-	BoardId int		`json:"id"`
-	Name    string	`json:"name"`
-	Lists   []List	`json:"lists"`
+	BoardId int    `json:"id"`
+	Name    string `json:"name"`
+	Lists   []List `json:"lists"`
 }
 
 var database = []Board{}
@@ -78,18 +80,26 @@ func editList(w http.ResponseWriter, r *http.Request) {
 
 			for i := 0; i < len(lists); i++ {
 				list := lists[i]
-				ListId := strconv.Itoa(list.ListId)
+				listId := strconv.Itoa(list.ListId)
 
-				if ListId == id {
+				if listId != id && !valid.IsInt(id) {
+					w.WriteHeader(http.StatusBadRequest)
+					break
+				} else if listId == id {
+					fmt.Println("found")
 					data := map[string]interface{}{
-						"id": list.ListId,
+						"id":    list.ListId,
 						"title": list.Title,
 					}
-
+	
 					dataJson, _ := json.Marshal(data)
+	
+					fmt.Println(data)
 					fmt.Fprintf(w, string(dataJson))
-				} 
-
+					w.WriteHeader(http.StatusAccepted)
+				} else {
+					w.WriteHeader(http.StatusBadRequest)
+				}
 			}
 		}
 	}
