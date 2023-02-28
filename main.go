@@ -5,23 +5,24 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type Card struct {
-	cardId   int
-	text string
+	cardId int
+	text   string
 }
 
 type List struct {
-	listId 	int
-	title string
-	cards []Card
+	listId int
+	title  string
+	cards  []Card
 }
 
 type Board struct {
-	boardId    int
-	Name  string
-	lists []List
+	boardId int
+	Name    string
+	lists   []List
 }
 
 var database = []Board{}
@@ -39,7 +40,7 @@ func init_database() {
 	database = append(database, board)
 }
 
-func editBoard(w http.ResponseWriter, r *http.Request){
+func editBoard(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		id := r.URL.Query().Get("id")
 
@@ -69,21 +70,33 @@ func delBoard(w http.ResponseWriter, r *http.Request) {
 
 func editList(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		// id := r.URL.Query().Get("id")
+		id := r.URL.Query().Get("id")
 
 		for i := 0; i < len(database); i++ {
 			board := database[i]
 			lists := board.lists
 
-
-
 			for i := 0; i < len(lists); i++ {
-				listId := lists[i].listId
+				list := lists[i]
+				listId := strconv.Itoa(list.listId)
+
+				if listId == id {
+					data := &List{
+						listId: list.listId,
+						title:  list.title,
+						cards:  list.cards,
+					}
+					dataJson, _ := json.Marshal(data)
+					fmt.Fprintf(w, string(dataJson))
+				} else {
+					w.WriteHeader(http.StatusInternalServerError)
+					w.Write([]byte("500 - Something bad happened!"))
+				}
+
 			}
 		}
 	}
 }
-
 
 func main() {
 	init_database()
