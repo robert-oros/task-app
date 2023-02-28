@@ -9,33 +9,33 @@ import (
 )
 
 type Card struct {
-	cardId int
-	text   string
+	CardId int 		`json:"id"`
+	Text   string 	`json:"text"`
 }
 
 type List struct {
-	listId int
-	title  string
-	cards  []Card
+	ListId int		`json:"id"`
+	Title  string	`json:"title"`
+	Cards  []Card	`json:"cards"`
 }
 
 type Board struct {
-	boardId int
-	Name    string
-	lists   []List
+	BoardId int		`json:"id"`
+	Name    string	`json:"name"`
+	Lists   []List	`json:"lists"`
 }
 
 var database = []Board{}
 
 func init_database() {
-	card1 := Card{cardId: 1, text: "Test"}
-	card2 := Card{cardId: 2, text: "Test"}
-	card3 := Card{cardId: 3, text: "Test"}
+	card1 := Card{CardId: 1, Text: "Test"}
+	card2 := Card{CardId: 2, Text: "Test"}
+	card3 := Card{CardId: 3, Text: "Test"}
 
-	list1 := List{listId: 1, title: "test", cards: []Card{card1, card2, card3}}
-	list2 := List{listId: 2, title: "test", cards: []Card{card1, card2, card3}}
+	list1 := List{ListId: 1, Title: "test", Cards: []Card{card1, card2, card3}}
+	list2 := List{ListId: 2, Title: "test", Cards: []Card{card1, card2, card3}}
 
-	board := Board{boardId: 1, Name: "Test", lists: []List{list1, list2}}
+	board := Board{BoardId: 1, Name: "Test", Lists: []List{list1, list2}}
 
 	database = append(database, board)
 }
@@ -74,24 +74,21 @@ func editList(w http.ResponseWriter, r *http.Request) {
 
 		for i := 0; i < len(database); i++ {
 			board := database[i]
-			lists := board.lists
+			lists := board.Lists
 
 			for i := 0; i < len(lists); i++ {
 				list := lists[i]
-				listId := strconv.Itoa(list.listId)
+				ListId := strconv.Itoa(list.ListId)
 
-				if listId == id {
-					data := &List{
-						listId: list.listId,
-						title:  list.title,
-						cards:  list.cards,
+				if ListId == id {
+					data := map[string]interface{}{
+						"id": list.ListId,
+						"title": list.Title,
 					}
+
 					dataJson, _ := json.Marshal(data)
 					fmt.Fprintf(w, string(dataJson))
-				} else {
-					w.WriteHeader(http.StatusInternalServerError)
-					w.Write([]byte("500 - Something bad happened!"))
-				}
+				} 
 
 			}
 		}
