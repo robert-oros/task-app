@@ -47,12 +47,25 @@ func editBoard(w http.ResponseWriter, r *http.Request) {
 		id := r.URL.Query().Get("id")
 
 		for i := 0; i < len(database); i++ {
-			fmt.Println(database[i])
-		}
-		fmt.Fprintf(w, "idBoard %+v", id)
-	}
+			board := database[i]
+			boardId := strconv.Itoa(board.BoardId)
+			if boardId == id {
+				fmt.Print("am intrat")
+				data := map[string]interface{}{
+					"id":    board.BoardId,
+					"name": board.Name,
+				}
+				dataJson, _ := json.Marshal(data)
+	
+				fmt.Println(data)
+				fmt.Fprintf(w, string(dataJson))
+				// w.WriteHeader(http.StatusAccepted)
 
-}
+		}
+
+	}
+}}
+
 
 func addBoard(w http.ResponseWriter, r *http.Request) {
 	var b Board
@@ -94,7 +107,6 @@ func editList(w http.ResponseWriter, r *http.Request) {
 	
 					dataJson, _ := json.Marshal(data)
 	
-					fmt.Println(data)
 					fmt.Fprintf(w, string(dataJson))
 					w.WriteHeader(http.StatusAccepted)
 				} else {
@@ -110,8 +122,8 @@ func main() {
 
 	fmt.Printf("Starting server at port 8081\n")
 	http.HandleFunc("/add_board", addBoard)
-	http.HandleFunc("remove_board/", delBoard)
-	http.HandleFunc("edit_board", editBoard)
+	http.HandleFunc("/remove_board/", delBoard)
+	http.HandleFunc("/edit_board", editBoard)
 	http.HandleFunc("/edit_list", editList)
 
 	if err := http.ListenAndServe(":8081", nil); err != nil {
