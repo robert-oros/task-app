@@ -24,7 +24,7 @@ type Board struct {
 	lists []List
 }
 
-var database = []Board{};
+var database = []Board{}
 
 func init_database() {
 	card1 := Card{cardId: 1, text: "Test"}
@@ -39,6 +39,17 @@ func init_database() {
 	database = append(database, board)
 }
 
+func editBoard(w http.ResponseWriter, r *http.Request){
+	if r.Method == http.MethodGet {
+		id := r.URL.Query().Get("id")
+
+		for i := 0; i < len(database); i++ {
+			fmt.Println(database[i])
+		}
+		fmt.Fprintf(w, "idBoard %+v", id)
+	}
+
+}
 func addBoard(w http.ResponseWriter, r *http.Request) {
 	var b Board
 	err := json.NewDecoder(r.Body).Decode(&b)
@@ -46,7 +57,9 @@ func addBoard(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	fmt.Fprintf(w, "Board: %+v", b)
+	database = append(database, b)
+	fmt.Fprintf(w, "Board: %+v\n", b)
+	fmt.Fprintf(w, "database: %+v", database)
 }
 
 func delBoard(w http.ResponseWriter, r *http.Request) {
@@ -73,12 +86,13 @@ func editList(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func main(){
+func main() {
 	init_database()
 
 	fmt.Printf("Starting server at port 8081\n")
 	http.HandleFunc("/add_board", addBoard)
-	http.HandleFunc("remove_board/{boardId}", delBoard)
+	http.HandleFunc("remove_board/", delBoard)
+	http.HandleFunc("edit_board", editBoard)
 	http.HandleFunc("/", editList)
 
 	if err := http.ListenAndServe(":8081", nil); err != nil {
