@@ -68,9 +68,12 @@ func editList(w http.ResponseWriter, r *http.Request) {
 
 func main(){
 	init_database()
+
 	fmt.Printf("Starting server at port 8081\n")
 	http.HandleFunc("/add_board", addBoard)
 	http.HandleFunc("remove_board/{boardId}", delBoard)
+	http.HandleFunc("/", editList)
+
 	if err := http.ListenAndServe(":8081", nil); err != nil {
 		log.Fatal(err)
 	}
