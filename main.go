@@ -384,6 +384,18 @@ func removeCard(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func getAllData(w http.ResponseWriter, r *http.Request) {
+	var boards []Board
+
+	for i := 0; i < len(db); i++ {
+		boards = append(boards, db[i])
+	}
+
+	dataJson, _ := json.Marshal(boards)
+	fmt.Fprintf(w, string(dataJson))
+	w.WriteHeader(http.StatusOK)
+}
+
 func main() {
 	init_database()
 
@@ -397,6 +409,7 @@ func main() {
 	http.HandleFunc("/add_card", addCard)
 	http.HandleFunc("/edit_card", editCard)
 	http.HandleFunc("/remove_card", removeCard)
+	http.HandleFunc("/get_boards", getAllData)
 
 	if err := http.ListenAndServe(":8081", nil); err != nil {
 		log.Fatal(err)
