@@ -6,8 +6,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	valid "github.com/asaskevich/govalidator"
 	"strconv"
+
+	valid "github.com/asaskevich/govalidator"
 )
 
 type Card struct {
@@ -83,7 +84,7 @@ func delBoard(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func existList(id string) (exist bool, boardPos, listPos int) {
+func getBoardListPos(list_id string) (exist bool, boardPos, listPos int) {
 	exist = false
 	boardPos = 0
 	listPos = 0
@@ -97,7 +98,7 @@ func existList(id string) (exist bool, boardPos, listPos int) {
 			list := lists[j]
 			listId := strconv.Itoa(list.ListId)
 
-			if listId == id && valid.IsInt(id) {
+			if listId == list_id && valid.IsInt(list_id) {
 				exist = true
 				listPos = j
 			}
@@ -109,7 +110,7 @@ func existList(id string) (exist bool, boardPos, listPos int) {
 func editList(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		id := r.URL.Query().Get("id")
-		existList, boardPos, listPos := existList(id)
+		existList, boardPos, listPos := getBoardListPos(id)
 
 		if existList {
 			board := database[boardPos]
@@ -143,9 +144,13 @@ func editList(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 		}
 
-		existList, boardPos, listPos := existList(strconv.Itoa(editedList.ListId))
+		existList, boardPos, listPos := getBoardListPos(strconv.Itoa(editedList.ListId))
 		if existList {
-			database[boardPos].Lists[listPos].Title = editedList.Title
+			list := database[boardPos].Lists[listPos]
+			list.Title = editedList.Title
+			w.WriteHeader(http.StatusAccepted)
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
 		}
 	}
 }
@@ -153,7 +158,15 @@ func editList(w http.ResponseWriter, r *http.Request) {
 func removeList(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodDelete {
 		id := r.URL.Query().Get("id")
-		println(id)
+
+		existList, boardPos, listPos := getBoardListPos(id)
+		if existList {
+			database[boardPos].Lists = append(database[boardPos].Lists[:listPos], database[boardPos].Lists[listPos+1:]...)
+			
+			w.WriteHeader(http.StatusAccepted)
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
 	}
 }
 
@@ -166,7 +179,7 @@ func main() {
 	http.HandleFunc("/edit_board", editBoard)
 	http.HandleFunc("/edit_list", editList)
 	http.HandleFunc("/remove_list", removeList)
-	
+
 	if err := http.ListenAndServe(":8081", nil); err != nil {
 		log.Fatal(err)
 	}
