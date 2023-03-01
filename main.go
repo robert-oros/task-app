@@ -43,26 +43,41 @@ func init_database() {
 	database = append(database, board)
 }
 
+func existAndGetPosBoard(board_id string)(exist bool, boardPos int){
+	exist = false
+	boardPos = 0
+
+	for i := 0; i < len(database); i++ {
+		board := database[i]
+		boardPos = i
+		boardId := strconv.Itoa(board.BoardId)
+
+		if board_id == boardId && valid.IsInt(board_id) {
+			exist = true
+		}
+	}
+	return exist, boardPos
+}
+
 func editBoard(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		id := r.URL.Query().Get("id")
-
-		for i := 0; i < len(database); i++ {
-			board := database[i]
-			boardId := strconv.Itoa(board.BoardId)
-
-			if boardId == id {
-				data := map[string]interface{}{
-					"id":   board.BoardId,
-					"name": board.Name,
-				}
-
-				dataJson, _ := json.Marshal(data)
-
-				fmt.Fprintf(w, string(dataJson))
+		
+		existBoard, boardPos := existAndGetPosBoard(id)
+		if existBoard {
+			board := database[boardPos]
+			data := map[string]interface{}{
+				"id":   board.BoardId,
+				"name": board.Name,
 			}
 
+			dataJson, _ := json.Marshal(data)
+
+			fmt.Fprintf(w, string(dataJson))
+			w.WriteHeader(http.StatusAccepted)
 		}
+		w.WriteHeader(http.StatusBadRequest)
+
 	}
 	if r.Method == http.MethodPut {
 		var b Board
@@ -74,15 +89,15 @@ func editBoard(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		
-		for i := 0; i < len(database); i++ {
-			board := database[i]
-			boardId := strconv.Itoa(board.BoardId)
-
-			if boardId == id {
-				database[i].Name = b.Name
-			}
-			fmt.Fprintf(w, "database: %+v", database)
+		existBoard, boardPos := existAndGetPosBoard(id)
+		if existBoard {
+			database[boardPos].Name = b.Name
+			w.WriteHeader(http.StatusAccepted)
+		}else {
+			w.WriteHeader(http.StatusBadRequest)
 		}
+		fmt.Fprintf(w, "database: %+v", database)
+		
 	}
 }
 
@@ -103,17 +118,16 @@ func delBoard(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodDelete {
 		id := r.URL.Query().Get("id")
 
-		for i := 0; i < len(database); i++ {
-			board := database[i]
-			boardId := strconv.Itoa(board.BoardId)
-
-			if boardId == id {
-				database = append(database[:i], database[i+1:]...)			
-			}
+		existBoard, boardPos := existAndGetPosBoard(id)
+		if existBoard {
+			fmt.Print("am intrat")
+			database = append(database[:boardPos], database[boardPos+1:]...)
+			fmt.Fprintf(w, "Database: %+v\n", database)
+			w.WriteHeader(http.StatusAccepted)			
 		}
+		w.WriteHeader(http.StatusBadRequest)
 	}
 }
-
 
 func getBoardListPos(list_id string) (exist bool, boardPos, listPos int) {
 	exist = false
@@ -206,7 +220,7 @@ func main() {
 
 	fmt.Printf("Starting server at port 8081\n")
 	http.HandleFunc("/add_board", addBoard)
-	http.HandleFunc("/remove_board/", delBoard)
+	http.HandleFunc("/remove_board", delBoard)
 	http.HandleFunc("/edit_board", editBoard)
 	http.HandleFunc("/edit_list", editList)
 	http.HandleFunc("/remove_list", removeList)
