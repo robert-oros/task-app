@@ -12,7 +12,9 @@ import (
 )
 
 type Card struct {
-	CardId int    `json:"id"`
+	BoardId int	  `json:"boardId"`
+	ListId int    `json:"listId"`
+	CardId int    `json:"cardId"`
 	Text   string `json:"text"`
 }
 
@@ -32,12 +34,16 @@ type Board struct {
 var database = []Board{}
 
 func init_database() {
-	card1 := Card{CardId: 1, Text: "Test"}
-	card2 := Card{CardId: 2, Text: "Test"}
-	card3 := Card{CardId: 3, Text: "Test"}
+	card1 := Card{BoardId: 1, ListId:1, CardId: 1, Text: "Test"}
+	card2 := Card{BoardId: 1, ListId:1, CardId: 1, Text: "Test"}
+	card3 := Card{BoardId: 1, ListId:1, CardId: 1, Text: "Test"}
+
+	card4 := Card{BoardId: 1, ListId:2, CardId: 1, Text: "Test2"}
+	card5 := Card{BoardId: 1, ListId:2, CardId: 1, Text: "Test2"}
+	card6 := Card{BoardId: 1, ListId:2, CardId: 1, Text: "Test2"}
 
 	list1 := List{ListId: 1, Title: "test", Cards: []Card{card1, card2, card3}}
-	list2 := List{ListId: 2, Title: "test", Cards: []Card{card1, card2, card3}}
+	list2 := List{ListId: 2, Title: "test", Cards: []Card{card4, card5, card6}}
 
 	board := Board{BoardId: 1, Name: "Test", Lists: []List{list1, list2}}
 
@@ -244,6 +250,52 @@ func removeList(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func getCardPosById(board_pos, list_pos int, card_id string) (exist bool, cardPos int) {
+	exist = false 
+	cardPos = 0
+
+
+	cards := database[board_pos].Lists[list_pos].Cards
+	for i := 0; i < len(cards); i++ {
+		if strconv.Itoa(cards[i].CardId) == card_id && valid.IsInt(card_id) {
+			exist = true
+			cardPos = i
+		}
+	}
+
+	return exist, cardPos
+}
+
+// http://localhost:8081/edit_card?boardId=1&listId=1&cardId=1
+func editCard(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		list_id := r.URL.Query().Get("listId")
+		board_id := r.URL.Query().Get("boardId")
+		card_id := r.URL.Query().Get("cardId")
+
+		existBoard, boardPos := getBoardPosById(board_id)
+		existList, listPos := getListPosById(boardPos, list_id)
+		existCard, cardPos := getCardPosById(boardPos, listPos, card_id)
+
+		if existBoard && existList && existCard {
+			card := database[boardPos].Lists[listPos].Cards[cardPos]
+
+			data := map[string]interface{}{
+				"boardId": card.BoardId,
+				"listId": card.ListId,
+				"cardId": card.CardId,
+				"text": card.Text,
+			}
+
+			dataJson, _ := json.Marshal(data)
+			fmt.Fprintf(w, string(dataJson))
+			w.WriteHeader(http.StatusAccepted)
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}	
+	}
+}
+
 func main() {
 	init_database()
 
@@ -253,6 +305,7 @@ func main() {
 	http.HandleFunc("/edit_board", editBoard)
 	http.HandleFunc("/edit_list", editList)
 	http.HandleFunc("/remove_list", removeList)
+	http.HandleFunc("/edit_card", editCard)
 
 	if err := http.ListenAndServe(":8081", nil); err != nil {
 		log.Fatal(err)
