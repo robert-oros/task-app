@@ -108,7 +108,7 @@ func editBoard(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func adoard(w http.ResponseWriter, r *http.Request) {
+func addBoard(w http.ResponseWriter, r *http.Request) {
 	var b Board
 
 	err := json.NewDecoder(r.Body).Decode(&b)
@@ -164,6 +164,27 @@ func getListPosById(board_pos int, list_id string) (exist bool, listPos int) {
 
 	return exist, listPos
 }
+
+func addList(w http.ResponseWriter, r *http.Request){
+	var l List
+
+	err := json.NewDecoder(r.Body).Decode(&l)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	boardId := strconv.Itoa(l.BoardId)
+
+	exist, boardPos := getBoardPosById(boardId)
+	if exist {
+		db[boardPos].Lists = append(db[boardPos].Lists, l)
+	}
+
+	db = append(db, db[boardPos])
+	fmt.Fprintf(w, "Board: %+v\n", db)
+}
+
 
 // http://localhost:8081/edit_list?listId=2&boardId=2
 func editList(w http.ResponseWriter, r *http.Request) {
@@ -265,6 +286,16 @@ func getCardPosById(board_pos, list_pos int, card_id string) (exist bool, cardPo
 
 	return exist, cardPos
 }
+func addCard(w http.ResponseWriter, r *http.Request){
+	var c Card
+
+	err := json.NewDecoder(r.Body).Decode(&c)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	
+}
 
 // http://localhost:8081/edit_card?boardId=1&listId=1&cardId=1
 func editCard(w http.ResponseWriter, r *http.Request) {
@@ -357,11 +388,13 @@ func main() {
 	init_database()
 
 	fmt.Printf("Starting server at port 8081\n")
-	http.HandleFunc("/add_board", adoard)
+	http.HandleFunc("/add_board", addBoard)
 	http.HandleFunc("/remove_board", delBoard)
 	http.HandleFunc("/edit_board", editBoard)
+	http.HandleFunc("/add_list", addList)
 	http.HandleFunc("/edit_list", editList)
 	http.HandleFunc("/remove_list", removeList)
+	http.HandleFunc("/add_card", addCard)
 	http.HandleFunc("/edit_card", editCard)
 	http.HandleFunc("/remove_card", removeCard)
 
