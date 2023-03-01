@@ -3,11 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
-
 	valid "github.com/asaskevich/govalidator"
+	"strconv"
 )
 
 type Card struct {
@@ -52,20 +52,20 @@ func editBoard(w http.ResponseWriter, r *http.Request) {
 			if boardId == id {
 				fmt.Print("am intrat")
 				data := map[string]interface{}{
-					"id":    board.BoardId,
+					"id":   board.BoardId,
 					"name": board.Name,
 				}
 				dataJson, _ := json.Marshal(data)
-	
+
 				fmt.Println(data)
 				fmt.Fprintf(w, string(dataJson))
 				// w.WriteHeader(http.StatusAccepted)
 
+			}
+
 		}
-
 	}
-}}
-
+}
 
 func addBoard(w http.ResponseWriter, r *http.Request) {
 	var b Board
@@ -83,37 +83,77 @@ func delBoard(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func existList(id string) (exist bool, boardPos, listPos int) {
+	exist = false
+	boardPos = 0
+	listPos = 0
+
+	for i := 0; i < len(database); i++ {
+		board := database[i]
+		lists := board.Lists
+		boardPos = i
+
+		for j := 0; j < len(lists); j++ {
+			list := lists[j]
+			listId := strconv.Itoa(list.ListId)
+
+			if listId == id && valid.IsInt(id) {
+				exist = true
+				listPos = j
+			}
+		}
+	}
+	return exist, boardPos, listPos
+}
+
 func editList(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		id := r.URL.Query().Get("id")
+		existList, boardPos, listPos := existList(id)
 
-		for i := 0; i < len(database); i++ {
-			board := database[i]
-			lists := board.Lists
+		if existList {
+			board := database[boardPos]
+			list := board.Lists[listPos]
 
-			for i := 0; i < len(lists); i++ {
-				list := lists[i]
-				listId := strconv.Itoa(list.ListId)
-
-				if listId != id && !valid.IsInt(id) {
-					w.WriteHeader(http.StatusBadRequest)
-					break
-				} else if listId == id {
-					fmt.Println("found")
-					data := map[string]interface{}{
-						"id":    list.ListId,
-						"title": list.Title,
-					}
-	
-					dataJson, _ := json.Marshal(data)
-	
-					fmt.Fprintf(w, string(dataJson))
-					w.WriteHeader(http.StatusAccepted)
-				} else {
-					w.WriteHeader(http.StatusBadRequest)
-				}
+			data := map[string]interface{}{
+				"id":    list.ListId,
+				"title": list.Title,
 			}
+
+			dataJson, _ := json.Marshal(data)
+			fmt.Fprintf(w, string(dataJson))
+			w.WriteHeader(http.StatusAccepted)
 		}
+		w.WriteHeader(http.StatusBadRequest)
+
+	}
+
+	if r.Method == http.MethodPut {
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Printf("Error reading body: %v", err)
+			http.Error(w, "can't read body", http.StatusBadRequest)
+			return
+		}
+
+		var editedList List
+
+		err = json.Unmarshal(body, &editedList)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+
+		existList, boardPos, listPos := existList(strconv.Itoa(editedList.ListId))
+		if existList {
+			database[boardPos].Lists[listPos].Title = editedList.Title
+		}
+	}
+}
+
+func removeList(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodDelete {
+		id := r.URL.Query().Get("id")
+		println(id)
 	}
 }
 
@@ -125,7 +165,8 @@ func main() {
 	http.HandleFunc("/remove_board/", delBoard)
 	http.HandleFunc("/edit_board", editBoard)
 	http.HandleFunc("/edit_list", editList)
-
+	http.HandleFunc("/remove_list", removeList)
+	
 	if err := http.ListenAndServe(":8081", nil); err != nil {
 		log.Fatal(err)
 	}
