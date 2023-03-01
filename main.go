@@ -31,7 +31,7 @@ type Board struct {
 	Lists   []List `json:"lists"`
 }
 
-var database = []Board{}
+var db = []Board{}
 
 func init_database() {
 	card1 := Card{BoardId: 1, ListId:1, CardId: 1, Text: "Test"}
@@ -47,15 +47,15 @@ func init_database() {
 
 	board := Board{BoardId: 1, Name: "Test", Lists: []List{list1, list2}}
 
-	database = append(database, board)
+	db = append(db, board)
 }
 
 func existAndGetPosBoard(board_id string)(exist bool, boardPos int){
 	exist = false
 	boardPos = 0
 
-	for i := 0; i < len(database); i++ {
-		board := database[i]
+	for i := 0; i < len(db); i++ {
+		board := db[i]
 		boardPos = i
 		boardId := strconv.Itoa(board.BoardId)
 
@@ -72,7 +72,7 @@ func editBoard(w http.ResponseWriter, r *http.Request) {
 		
 		existBoard, boardPos := existAndGetPosBoard(id)
 		if existBoard {
-			board := database[boardPos]
+			board := db[boardPos]
 			data := map[string]interface{}{
 				"id":   board.BoardId,
 				"name": board.Name,
@@ -98,17 +98,17 @@ func editBoard(w http.ResponseWriter, r *http.Request) {
 		
 		existBoard, boardPos := existAndGetPosBoard(id)
 		if existBoard {
-			database[boardPos].Name = b.Name
+			db[boardPos].Name = b.Name
 			w.WriteHeader(http.StatusAccepted)
 		}else {
 			w.WriteHeader(http.StatusBadRequest)
 		}
-		fmt.Fprintf(w, "database: %+v", database)
+		fmt.Fprintf(w, "db: %+v", db)
 		
 	}
 }
 
-func addBoard(w http.ResponseWriter, r *http.Request) {
+func adoard(w http.ResponseWriter, r *http.Request) {
 	var b Board
 
 	err := json.NewDecoder(r.Body).Decode(&b)
@@ -117,7 +117,7 @@ func addBoard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	database = append(database, b)
+	db = append(db, b)
 	fmt.Fprintf(w, "Board: %+v\n", b)
 }
 
@@ -128,8 +128,8 @@ func delBoard(w http.ResponseWriter, r *http.Request) {
 		existBoard, boardPos := existAndGetPosBoard(id)
 		if existBoard {
 			fmt.Print("am intrat")
-			database = append(database[:boardPos], database[boardPos+1:]...)
-			fmt.Fprintf(w, "Database: %+v\n", database)
+			db = append(db[:boardPos], db[boardPos+1:]...)
+			fmt.Fprintf(w, "Database: %+v\n", db)
 			w.WriteHeader(http.StatusAccepted)			
 		}
 		w.WriteHeader(http.StatusBadRequest)
@@ -140,8 +140,8 @@ func getBoardPosById(board_id string) (exist bool, boardPos int) {
 	exist = false
 	boardPos = 0
 
-	for i := 0; i < len(database); i++ {
-		if strconv.Itoa(database[i].BoardId) == board_id && valid.IsInt(board_id) {
+	for i := 0; i < len(db); i++ {
+		if strconv.Itoa(db[i].BoardId) == board_id && valid.IsInt(board_id) {
 			exist = true
 			boardPos = i
 		}
@@ -154,8 +154,8 @@ func getListPosById(board_pos int, list_id string) (exist bool, listPos int) {
 	exist = false
 	listPos = 0
 
-	for i := 0; i < len(database[board_pos].Lists); i++ {
-		if strconv.Itoa(database[board_pos].Lists[i].ListId) == list_id && valid.IsInt(list_id) {
+	for i := 0; i < len(db[board_pos].Lists); i++ {
+		if strconv.Itoa(db[board_pos].Lists[i].ListId) == list_id && valid.IsInt(list_id) {
 			exist = true
 			listPos = i
 
@@ -175,7 +175,7 @@ func editList(w http.ResponseWriter, r *http.Request) {
 		existList, listPos := getListPosById(boardPos, list_id)
 
 		if existBoard && existList {
-			board := database[boardPos]
+			board := db[boardPos]
 			list := board.Lists[listPos]
 
 			boar_id, _ := strconv.Atoi(board_id)
@@ -213,7 +213,7 @@ func editList(w http.ResponseWriter, r *http.Request) {
 		existList, listPos := getListPosById(boardPos, strconv.Itoa(editedList.ListId))
 
 		if existBoard && existList {
-			database[boardPos].Lists[listPos].Title = editedList.Title
+			db[boardPos].Lists[listPos].Title = editedList.Title
 			w.WriteHeader(http.StatusAccepted)
 		} else {
 		 	w.WriteHeader(http.StatusBadRequest)
@@ -242,7 +242,7 @@ func removeList(w http.ResponseWriter, r *http.Request) {
 		existList, listPos := getListPosById(boardPos, strconv.Itoa(editedList.ListId))
 
 		if existBoard && existList {
-			database[boardPos].Lists = append(database[boardPos].Lists[:listPos], database[boardPos].Lists[listPos+1:]...)
+			db[boardPos].Lists = append(db[boardPos].Lists[:listPos], db[boardPos].Lists[listPos+1:]...)
 			w.WriteHeader(http.StatusAccepted)
 		} else {
 		 	w.WriteHeader(http.StatusBadRequest)
@@ -255,7 +255,7 @@ func getCardPosById(board_pos, list_pos int, card_id string) (exist bool, cardPo
 	cardPos = 0
 
 
-	cards := database[board_pos].Lists[list_pos].Cards
+	cards := db[board_pos].Lists[list_pos].Cards
 	for i := 0; i < len(cards); i++ {
 		if strconv.Itoa(cards[i].CardId) == card_id && valid.IsInt(card_id) {
 			exist = true
@@ -278,7 +278,7 @@ func editCard(w http.ResponseWriter, r *http.Request) {
 		existCard, cardPos := getCardPosById(boardPos, listPos, card_id)
 
 		if existBoard && existList && existCard {
-			card := database[boardPos].Lists[listPos].Cards[cardPos]
+			card := db[boardPos].Lists[listPos].Cards[cardPos]
 
 			data := map[string]interface{}{
 				"boardId": card.BoardId,
@@ -294,13 +294,41 @@ func editCard(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 		}	
 	}
+
+	// {"boardId":1,"cardId":1,"listId":1,"text":"Test"}
+	if r.Method == http.MethodGet {
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Printf("Error reading body: %v", err)
+			http.Error(w, "can't read body", http.StatusBadRequest)
+			return
+		}
+
+		var editedCard Card
+		err = json.Unmarshal(body, &editedCard)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+
+		existBoard, boardPos := getBoardPosById(strconv.Itoa(editedCard.BoardId))
+		existList, listPos := getListPosById(boardPos, strconv.Itoa(editedCard.ListId))
+		existCard, cardPos := getCardPosById(boardPos, listPos, strconv.Itoa(editedCard.CardId))
+
+		if existBoard && existList && existCard {
+			db[boardPos].Lists[listPos].Cards = append(db[boardPos].Lists[listPos].Cards[:cardPos], db[boardPos].Lists[listPos].Cards[cardPos+1:]...)
+			w.WriteHeader(http.StatusAccepted)
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	}
+	
 }
 
 func main() {
 	init_database()
 
 	fmt.Printf("Starting server at port 8081\n")
-	http.HandleFunc("/add_board", addBoard)
+	http.HandleFunc("/add_board", adoard)
 	http.HandleFunc("/remove_board", delBoard)
 	http.HandleFunc("/edit_board", editBoard)
 	http.HandleFunc("/edit_list", editList)
