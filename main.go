@@ -17,7 +17,8 @@ type Card struct {
 }
 
 type List struct {
-	ListId int    `json:"id"`
+	BoardId int	  `json:"boardId"`
+	ListId int    `json:"listId"`
 	Title  string `json:"title"`
 	Cards  []Card `json:"cards"`
 }
@@ -129,51 +130,64 @@ func delBoard(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getBoardListPos(list_id string) (exist bool, boardPos, listPos int) {
+func getBoardPosById(board_id string) (exist bool, boardPos int) {
 	exist = false
 	boardPos = 0
-	listPos = 0
 
 	for i := 0; i < len(database); i++ {
-		board := database[i]
-		lists := board.Lists
-		boardPos = i
-
-		for j := 0; j < len(lists); j++ {
-			list := lists[j]
-			listId := strconv.Itoa(list.ListId)
-
-			if listId == list_id && valid.IsInt(list_id) {
-				exist = true
-				listPos = j
-			}
+		if strconv.Itoa(database[i].BoardId) == board_id && valid.IsInt(board_id) {
+			exist = true
+			boardPos = i
 		}
 	}
-	return exist, boardPos, listPos
+
+	return exist, boardPos
 }
 
+func getListPosById(board_pos int, list_id string) (exist bool, listPos int) {
+	exist = false
+	listPos = 0
+
+	for i := 0; i < len(database[board_pos].Lists); i++ {
+		if strconv.Itoa(database[board_pos].Lists[i].ListId) == list_id && valid.IsInt(list_id) {
+			exist = true
+			listPos = i
+
+		}
+	}
+
+	return exist, listPos
+}
+
+// http://localhost:8081/edit_list?listId=2&boardId=2
 func editList(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		id := r.URL.Query().Get("id")
-		existList, boardPos, listPos := getBoardListPos(id)
+		list_id := r.URL.Query().Get("listId")
+		board_id := r.URL.Query().Get("boardId")
 
-		if existList {
+		existBoard, boardPos := getBoardPosById(board_id)
+		existList, listPos := getListPosById(boardPos, list_id)
+
+		if existBoard && existList {
 			board := database[boardPos]
 			list := board.Lists[listPos]
 
+			boar_id, _ := strconv.Atoi(board_id)
+
 			data := map[string]interface{}{
-				"id":    list.ListId,
+				"boardId": boar_id,
+				"listId": list.ListId,
 				"title": list.Title,
 			}
 
 			dataJson, _ := json.Marshal(data)
 			fmt.Fprintf(w, string(dataJson))
 			w.WriteHeader(http.StatusAccepted)
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
 		}
-		w.WriteHeader(http.StatusBadRequest)
-
 	}
-
+	// {"boardId":1,"listId":1,"title":"asdftest"}
 	if r.Method == http.MethodPut {
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
@@ -189,29 +203,44 @@ func editList(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 		}
 
-		existList, boardPos, listPos := getBoardListPos(strconv.Itoa(editedList.ListId))
-		if existList {
-			list := database[boardPos].Lists[listPos]
-			list.Title = editedList.Title
+		existBoard, boardPos := getBoardPosById(strconv.Itoa(editedList.BoardId))
+		existList, listPos := getListPosById(boardPos, strconv.Itoa(editedList.ListId))
+
+		if existBoard && existList {
+			database[boardPos].Lists[listPos].Title = editedList.Title
 			w.WriteHeader(http.StatusAccepted)
 		} else {
-			w.WriteHeader(http.StatusBadRequest)
-		}
+		 	w.WriteHeader(http.StatusBadRequest)
+		}	
 	}
 }
 
+// {"boardId":1,"listId":1}
 func removeList(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodDelete {
-		id := r.URL.Query().Get("id")
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Printf("Error reading body: %v", err)
+			http.Error(w, "can't read body", http.StatusBadRequest)
+			return
+		}
 
-		existList, boardPos, listPos := getBoardListPos(id)
-		if existList {
-			database[boardPos].Lists = append(database[boardPos].Lists[:listPos], database[boardPos].Lists[listPos+1:]...)
-			
-			w.WriteHeader(http.StatusAccepted)
-		} else {
+		var editedList List
+
+		err = json.Unmarshal(body, &editedList)
+		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 		}
+
+		existBoard, boardPos := getBoardPosById(strconv.Itoa(editedList.BoardId))
+		existList, listPos := getListPosById(boardPos, strconv.Itoa(editedList.ListId))
+
+		if existBoard && existList {
+			database[boardPos].Lists = append(database[boardPos].Lists[:listPos], database[boardPos].Lists[listPos+1:]...)
+			w.WriteHeader(http.StatusAccepted)
+		} else {
+		 	w.WriteHeader(http.StatusBadRequest)
+		}	
 	}
 }
 
