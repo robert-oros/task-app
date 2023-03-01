@@ -12,21 +12,21 @@ import (
 )
 
 type Card struct {
+	CardId int    `json:"cardId"`
 	BoardId int	  `json:"boardId"`
 	ListId int    `json:"listId"`
-	CardId int    `json:"cardId"`
 	Text   string `json:"text"`
 }
 
 type List struct {
-	BoardId int	  `json:"boardId"`
 	ListId int    `json:"listId"`
+	BoardId int	  `json:"boardId"`
 	Title  string `json:"title"`
 	Cards  []Card `json:"cards"`
 }
 
 type Board struct {
-	BoardId int    `json:"id"`
+	BoardId int    `json:"boardId"`
 	Name    string `json:"name"`
 	Lists   []List `json:"lists"`
 }
