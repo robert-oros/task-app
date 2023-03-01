@@ -50,39 +50,70 @@ func editBoard(w http.ResponseWriter, r *http.Request) {
 		for i := 0; i < len(database); i++ {
 			board := database[i]
 			boardId := strconv.Itoa(board.BoardId)
+
 			if boardId == id {
-				fmt.Print("am intrat")
 				data := map[string]interface{}{
 					"id":   board.BoardId,
 					"name": board.Name,
 				}
+
 				dataJson, _ := json.Marshal(data)
 
-				fmt.Println(data)
 				fmt.Fprintf(w, string(dataJson))
-				// w.WriteHeader(http.StatusAccepted)
-
 			}
 
+		}
+	}
+	if r.Method == http.MethodPut {
+		var b Board
+		id := r.URL.Query().Get("id")
+
+		err := json.NewDecoder(r.Body).Decode(&b)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		
+		for i := 0; i < len(database); i++ {
+			board := database[i]
+			boardId := strconv.Itoa(board.BoardId)
+
+			if boardId == id {
+				database[i].Name = b.Name
+			}
+			fmt.Fprintf(w, "database: %+v", database)
 		}
 	}
 }
 
 func addBoard(w http.ResponseWriter, r *http.Request) {
 	var b Board
+
 	err := json.NewDecoder(r.Body).Decode(&b)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
 	database = append(database, b)
 	fmt.Fprintf(w, "Board: %+v\n", b)
-	// fmt.Fprintf(w, "database: %+v", database)
 }
 
 func delBoard(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodDelete {
+		id := r.URL.Query().Get("id")
 
+		for i := 0; i < len(database); i++ {
+			board := database[i]
+			boardId := strconv.Itoa(board.BoardId)
+
+			if boardId == id {
+				database = append(database[:i], database[i+1:]...)			
+			}
+		}
+	}
 }
+
 
 func getBoardListPos(list_id string) (exist bool, boardPos, listPos int) {
 	exist = false
