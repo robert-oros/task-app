@@ -294,7 +294,21 @@ func addCard(w http.ResponseWriter, r *http.Request){
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	
+
+	_, boardPos := getBoardPosById(strconv.Itoa(c.BoardId))
+	exist, listPos := getListPosById(boardPos, strconv.Itoa(c.ListId)) 
+	if exist {
+		fmt.Print("am intrat")
+		fmt.Print(listPos)
+		db[boardPos].Lists[listPos].Cards = append(db[boardPos].Lists[listPos].Cards, c)
+		fmt.Print(db[boardPos].Lists[listPos].Cards)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
+	db = append(db, db[boardPos])
+	fmt.Fprintf(w, "Board: %+v\n", db)
+
 }
 
 // http://localhost:8081/edit_card?boardId=1&listId=1&cardId=1
