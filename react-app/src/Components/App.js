@@ -1,8 +1,29 @@
+import React, { Component } from 'react';
+import axios from "axios";
 
-function App() {
-  return (
-    <h1>Hello World</h1>
-  );
+class App extends Component {
+  constructor(){
+    super()
+    this.state = {
+      boards : {}
+    }
+  }
+
+  componentDidMount(){
+    axios.get("http://localhost:8081/get_boards")
+    .then(res => {
+      console.log("am intrat")
+      console.log(res)
+      this.setState({boards: res})
+    })
+  }
+  
+
+  render(){
+    return (
+      <h1>{this.state.boards}</h1>
+    );
+  }
 }
 
 export default App;
