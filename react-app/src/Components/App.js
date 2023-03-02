@@ -5,7 +5,7 @@ class App extends Component {
   constructor(){
     super()
     this.state = {
-      boards : {}
+      boards: {}
     }
   }
 
@@ -16,12 +16,15 @@ class App extends Component {
       console.log(res)
       this.setState({boards: res})
     })
+    .then(res => {
+      console.log(res)
+    })
   }
   
 
-  render(){
+  render() {
     return (
-      <h1>{this.state.boards}</h1>
+      <h1>works</h1>
     );
   }
 }
