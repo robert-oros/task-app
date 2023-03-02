@@ -66,6 +66,7 @@ func existAndGetPosBoard(board_id string)(exist bool, boardPos int){
 	return exist, boardPos
 }
 
+// http://localhost:8081/edit_board?id=1
 func editBoard(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		id := r.URL.Query().Get("id")
@@ -86,6 +87,7 @@ func editBoard(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 
 	}
+	// {"id": 1, "name": "newBoard","lists": [{"id": 1, "title": "list", "cards":[]}]}
 	if r.Method == http.MethodPut {
 		var b Board
 		id := r.URL.Query().Get("id")
@@ -108,6 +110,8 @@ func editBoard(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// http://localhost:8081/add_board
+// {"id": 2, "name": "secondBoard","lists": []}
 func addBoard(w http.ResponseWriter, r *http.Request) {
 	var b Board
 
@@ -121,6 +125,7 @@ func addBoard(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Board: %+v\n", b)
 }
 
+// http://localhost:8081/remove_board?id=2
 func delBoard(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodDelete {
 		id := r.URL.Query().Get("id")
@@ -165,6 +170,8 @@ func getListPosById(board_pos int, list_id string) (exist bool, listPos int) {
 	return exist, listPos
 }
 
+// http://localhost:8081/add_card
+// {"boardId": 1,"listId": 3,"title": "thirdList","cards": []}
 func addList(w http.ResponseWriter, r *http.Request){
 	var l List
 
@@ -214,7 +221,7 @@ func editList(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 		}
 	}
-	// {"boardId":1,"listId":1,"title":"asdftest"}
+	// {"boardId":1,"listId":1}
 	if r.Method == http.MethodPut {
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
@@ -286,6 +293,9 @@ func getCardPosById(board_pos, list_pos int, card_id string) (exist bool, cardPo
 
 	return exist, cardPos
 }
+
+// http://localhost:8081/add_card
+// {"boardId": 1,"listId": 2,"cardId":4, "text": ""}
 func addCard(w http.ResponseWriter, r *http.Request){
 	var c Card
 
@@ -298,10 +308,8 @@ func addCard(w http.ResponseWriter, r *http.Request){
 	_, boardPos := getBoardPosById(strconv.Itoa(c.BoardId))
 	exist, listPos := getListPosById(boardPos, strconv.Itoa(c.ListId)) 
 	if exist {
-		fmt.Print("am intrat")
-		fmt.Print(listPos)
 		db[boardPos].Lists[listPos].Cards = append(db[boardPos].Lists[listPos].Cards, c)
-		fmt.Print(db[boardPos].Lists[listPos].Cards)
+		w.WriteHeader(http.StatusAccepted)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}
