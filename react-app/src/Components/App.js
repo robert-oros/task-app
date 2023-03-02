@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from "axios";
+// import axios from "axios";
 
 class App extends Component {
   constructor(){
@@ -10,19 +10,18 @@ class App extends Component {
   }
 
   componentDidMount(){
-    axios.get("http://localhost:8081/get_boards")
-    .then(res => {
-      console.log("am intrat")
-      console.log(res)
-      this.setState({boards: res})
+    fetch("http://localhost:8081/get_boards", {
+      method: 'GET'
     })
-    .then(res => {
-      console.log(res)
+    .then(respose => respose.json())
+    .then(data => {
+      this.setState({ boards : data})
     })
   }
   
 
   render() {
+    console.log(this.state.boards[0])
     return (
       <h1>works</h1>
     );
