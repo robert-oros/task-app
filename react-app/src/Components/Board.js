@@ -1,7 +1,7 @@
 import List from "./List";
 
 function Board(props) {
-  const lists = props.lists.map(l => {
+  const lists = props.data.lists.map(l => {
     return <List data={l}/>
   })
   

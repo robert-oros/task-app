@@ -33,6 +33,10 @@ type Board struct {
 
 var db = []Board{}
 
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
+	
 func init_database() {
 	card1 := Card{BoardId: 1, ListId:1, CardId: 1, Text: "Test"}
 	card2 := Card{BoardId: 1, ListId:1, CardId: 2, Text: "Test"}
@@ -407,6 +411,7 @@ func removeCard(w http.ResponseWriter, r *http.Request) {
 }
 
 func getAllData(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	var boards []Board
 
 	for i := 0; i < len(db); i++ {

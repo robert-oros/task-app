@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import Board from './Board';
 // import axios from "axios";
 
 class App extends Component {
   constructor(){
     super()
     this.state = {
-      boards: {}
+      boards: []
     }
   }
 
@@ -19,11 +20,20 @@ class App extends Component {
     })
   }
   
+  
 
   render() {
-    console.log(this.state.boards[0])
+    let boards;
+    if (typeof this.state.boards !== 'undefined') {
+      boards = this.state.boards?.map(b => {
+        return <Board data={b} />
+      })
+    }
     return (
-      <h1>works</h1>
+      <div>
+        <h1>works</h1>
+        {boards}
+      </div>
     );
   }
 }

@@ -13,4 +13,4 @@ function Card(props) {
   );
 }
 
-export default App;
+export default Card;
