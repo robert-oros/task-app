@@ -7,8 +7,11 @@ class App extends Component {
     super()
     this.state = {
       boards: [],
-      isLoaded: false
+      isLoaded: false,
+      showComponent: false
     }
+
+    this.displayBoard = this.displayBoard.bind(this)
   }
 
   componentDidMount(){
@@ -22,11 +25,29 @@ class App extends Component {
     })
   }
   
+  displayBoard(boardId) {
+    this.setState({showComponent: boardId})
+
+    if (this.state.showComponent == boardId) {
+      this.setState({showComponent: false})
+    }
+
+    console.log(this.state.showComponent)
+  }
+
   render() {
-    let boards;
+    let boards, boardsName;
     if (typeof this.state.boards !== 'undefined') {
-      boards = this.state.boards?.map(b => {
-        return <Board data={b} />
+      // boards = this.state.boards?.map(b => {
+      //   return <Board data={b} />
+      // })
+
+      boardsName = this.state.boards?.map(b => {
+        return <div>
+            <p onClick={() => this.displayBoard(b.boardId)}>{b.name}</p>
+            {this.state.showComponent && <Board data={b} />}
+          </div>
+          
       })
     }
 
@@ -34,12 +55,17 @@ class App extends Component {
       return (
         <div>
           <Navbar />
-          {boards}
+          <div className='container'>
+            {boardsName}
+          </div>
         </div>
       );
     } else {
       return (
-        <h4 style={{textAlign: "center", paddingTop: '50%', paddingBottom: '50%'}}>Loading Board...</h4>
+        <div>
+          <Navbar />
+          <h4 style={{textAlign: "center", paddingTop: '50%', paddingBottom: '50%'}}>Loading Board...</h4>
+        </div>
       );
     }
   }
