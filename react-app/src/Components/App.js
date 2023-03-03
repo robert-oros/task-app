@@ -57,18 +57,13 @@ class App extends Component {
   }
 
   render() {
-    let boards, boardsName;
+    let boardsName;
     if (typeof this.state.boards !== 'undefined') {
-      // boards = this.state.boards?.map(b => {
-      //   return <Board data={b} />
-      // })
-
       boardsName = this.state.boards?.map(b => {
         return <div>
-            <p onClick={() => this.setShowComponent(b.boardId)}>{b.name}</p>
-            {this.state.showComponent && <Board data={b} />}
+            <p style={{cursor: 'pointer'}} onClick={() => this.setShowComponent(b.boardId)}>{b.name}</p>
+            {this.state.showComponent && (b.boardId == this.state.showComponent) && <Board data={b} />}
           </div>
-          
       })
     }
 
@@ -76,10 +71,6 @@ class App extends Component {
       return (
         <div>
           <Navbar />
-          <p onClick={() => this.setStateForInput()}>Add Board</p>
-          {this.state.showInput ?
-            <input type="text" name='text' placeholder='Border Name'/> : <div></div>
-          }
           <div className='container'>
             {boardsName}
           </div>
