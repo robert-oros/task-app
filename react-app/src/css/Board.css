@@ -1,0 +1,18 @@
+.board-container {
+    background-color:#18beffe8;
+    -webkit-box-shadow: 8px 12px 34px -26px rgba(0,0,0,0.75);
+    -moz-box-shadow: 8px 12px 34px -26px rgba(0,0,0,0.75);
+    box-shadow: 8px 12px 34px -26px rgba(0,0,0,0.75);
+    padding: 0px;
+    color: rgb(255, 253, 253);
+}
+
+ul {
+    list-style-type: none;
+}
+
+.board-text {
+    background-color: #0099d680;
+    padding: 1.5%;
+    font-size: 20px;
+}

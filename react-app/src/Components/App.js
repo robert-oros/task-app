@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Board from './Board';
+import Navbar from './Navbar'
 
 class App extends Component {
   constructor(){
@@ -19,8 +20,6 @@ class App extends Component {
     })
   }
   
-  
-
   render() {
     let boards;
     if (typeof this.state.boards !== 'undefined') {
@@ -28,9 +27,10 @@ class App extends Component {
         return <Board data={b} />
       })
     }
+
     return (
       <div>
-        <h1>works</h1>
+        <Navbar />
         {boards}
       </div>
     );

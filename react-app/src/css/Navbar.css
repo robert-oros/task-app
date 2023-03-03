@@ -1,0 +1,20 @@
+body {
+    margin: auto;
+    background-color: #e1f7ff ;
+}
+
+.center {
+    text-align: center;
+    padding: 5px;
+    font-weight: bold;
+    color: black;
+    background-color: #e1f7ff;
+}
+
+
+.nav-text {
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-weight: bold;
+    color: #00415ae7;
+    font-size: 50px;
+}

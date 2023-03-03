@@ -2,12 +2,12 @@ import '../css/Card.css'
 
 function Card(props) {
   return (
-    <ul>
-      <li>
+    <ul className="card-text-container">
+      {/* <li>
         <span className="label">{props.data.cardId}</span>
-      </li>
+      </li> */}
       <li>
-        <span className="label">{props.data.text}</span>
+        <span className="card-text">{props.data.text}</span>
       </li>
     </ul>
   );

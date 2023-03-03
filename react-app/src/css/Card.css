@@ -1,4 +1,18 @@
-.label {
-    display: inline-block;
-    width: 200px; 
+.card-text-container {
+    background-color: #03b8ff00;
+    margin: 7px;
+}
+
+.card-list {
+    margin-left: -31px;
+}
+
+.card-text-container .card-text {
+    padding: 15px;
+}
+
+.card-text-container > li {
+    background-color: #65d3ff79;  
+    margin: 0px;
+    padding: 2px;
 }

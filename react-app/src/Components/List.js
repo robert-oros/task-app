@@ -1,19 +1,48 @@
-import Cards from './Cards'
+import Card from './Card';
+import '../css/List.css'
 
 function List(props) {
-  return (
-    <div>
-      <ul>
-        <li>
-          <span className="label">{props.data.listId}</span>
-        </li>
-        <li>
-          <span className="label">{props.data.title}</span>
-        </li>
-      </ul>
+  const cards = props.data.cards.map(c => {
+    return <Card data={c}/>
+  })
 
-      <Cards cards={props.data.cards}/>
-    </div>
+  return (
+
+      <div class="col list-container">
+        <ul className='list-text'>
+          {/* <li>
+            <span className="label">{props.data.listId}</span>
+          </li> */}
+          <li>
+            <span className="label">{props.data.title}</span>
+          </li>
+        </ul>
+
+        <div className="card-list">
+          {cards}
+        </div>
+      </div>
+
+
+    // <div class="container">
+    //   <div class="row align-items-start">
+    //     <div class="col">
+
+    //       <ul>
+    //         <li>
+    //           <span className="label">{props.data.listId}</span>
+    //         </li>
+    //         <li>
+    //           <span className="label">{props.data.title}</span>
+    //         </li>
+    //       </ul>
+
+    //       <div>
+    //         {cards}
+    //       </div>
+    //     </div>
+    //   </div>
+    // </div>
   );
 }
   
