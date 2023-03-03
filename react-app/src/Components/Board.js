@@ -8,14 +8,14 @@ function Board(props) {
   
   return (
     <div class="container board-container">
-      <ul className="board-text">
-        {/* <li>
+      {/* <ul className="board-text">
+        <li>
           <span className="label">{props.data.boardId}</span>
-        </li> */}
+        </li> 
         <li>
           <span className="label">{props.data.name}</span>
         </li>
-      </ul>
+      </ul> */}
 
       <div class="container">
         <div class="row align-items-center">

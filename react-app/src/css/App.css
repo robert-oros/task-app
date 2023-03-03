@@ -1,0 +1,11 @@
+.simple-board-name {
+    cursor: pointer;
+    background-color:#18beffe8;
+    color:white;
+    padding: 15px;
+    margin: 0px;
+}
+
+.simple-board {
+    margin: 10px;
+}

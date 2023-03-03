@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Board from './Board';
 import Navbar from './Navbar'
+import '../css/App.css'
 
 class App extends Component {
   constructor(){
@@ -60,8 +61,8 @@ class App extends Component {
     let boardsName;
     if (typeof this.state.boards !== 'undefined') {
       boardsName = this.state.boards?.map(b => {
-        return <div>
-            <p style={{cursor: 'pointer'}} onClick={() => this.setShowComponent(b.boardId)}>{b.name}</p>
+        return <div className='simple-board'>
+            <p className='simple-board-name' onClick={() => this.setShowComponent(b.boardId)}>{b.name}</p>
             {this.state.showComponent && (b.boardId == this.state.showComponent) && <Board data={b} />}
           </div>
       })
