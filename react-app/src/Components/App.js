@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Board from './Board';
 import Navbar from './Navbar'
 import '../css/App.css'
+import AddInput from './AddInput';
 
 class App extends Component {
   constructor(){
@@ -38,23 +39,13 @@ class App extends Component {
     console.log(this.state.showComponent)
   }
 
-  addBoard(name, list){
-    fetch("http://localhost:8081/add_board", {
-      method: 'POST',
-      body: JSON.stringify({
-        Name: '',
-      }),
-    })
-    .then(res => res.json())
-    .catch(error => {
-      console.log(error)
-    })
-  }
+  
 
   setStateForInput(){
     this.setState({
       showInput: true
     })
+    console.log(this.state.showInput)
   }
 
   render() {
@@ -75,6 +66,8 @@ class App extends Component {
           <div className='container'>
             {boardsName}
           </div>
+          <p onClick={() => this.setStateForInput()}>Add board</p>
+          {this.state.showInput ? <AddInput/> : <div></div>}
         </div>
       );
     } else {

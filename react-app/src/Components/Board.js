@@ -2,9 +2,12 @@ import List from "./List";
 import '../css/Board.css'
 
 function Board(props) {
-  const lists = props.data.lists.map(l => {
-    return <List data={l}/>
-  })
+  let lists;
+  if (props.data.lists !== null) {
+    lists = props.data.lists.map(l => {
+      return <List data={l}/>
+    })
+  }
   
   return (
     <div class="container board-container">
@@ -18,9 +21,11 @@ function Board(props) {
       </ul> */}
 
       <div class="container">
+      <button>Adauga Lista</button>
         <div class="row align-items-center">
           {lists}
         </div>
+        
       </div>
     </div>
   );
