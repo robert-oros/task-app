@@ -1,7 +1,7 @@
 import Board from "./Board";
 
 function Boards(props) {
-    const boards = props.boards.map(b => {
+    const boards = props.data.boards.map(b => {
         return <Board data={b}/>
     })
 

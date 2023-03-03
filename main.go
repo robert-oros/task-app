@@ -38,18 +38,18 @@ func enableCors(w *http.ResponseWriter) {
 }
 	
 func init_database() {
-	card1 := Card{BoardId: 1, ListId:1, CardId: 1, Text: "Test"}
-	card2 := Card{BoardId: 1, ListId:1, CardId: 2, Text: "Test"}
-	card3 := Card{BoardId: 1, ListId:1, CardId: 3, Text: "Test"}
+	card1 := Card{BoardId: 1, ListId:1, CardId: 1, Text: "Card"}
+	card2 := Card{BoardId: 1, ListId:1, CardId: 2, Text: "Card"}
+	card3 := Card{BoardId: 1, ListId:1, CardId: 3, Text: "Card"}
 
-	card4 := Card{BoardId: 1, ListId:2, CardId: 1, Text: "Test2"}
-	card5 := Card{BoardId: 1, ListId:2, CardId: 2, Text: "Test2"}
-	card6 := Card{BoardId: 1, ListId:2, CardId: 3, Text: "Test2"}
+	card4 := Card{BoardId: 1, ListId:2, CardId: 1, Text: "Card"}
+	card5 := Card{BoardId: 1, ListId:2, CardId: 2, Text: "Card"}
+	card6 := Card{BoardId: 1, ListId:2, CardId: 3, Text: "Card"}
 
-	list1 := List{ListId: 1, Title: "test", Cards: []Card{card1, card2, card3}}
-	list2 := List{ListId: 2, Title: "test", Cards: []Card{card4, card5, card6}}
+	list1 := List{ListId: 1, Title: "List", Cards: []Card{card1, card2, card3}}
+	list2 := List{ListId: 2, Title: "List", Cards: []Card{card4, card5, card6}}
 
-	board := Board{BoardId: 1, Name: "Test", Lists: []List{list1, list2}}
+	board := Board{BoardId: 1, Name: "Board", Lists: []List{list1, list2}}
 
 	db = append(db, board)
 }
