@@ -8,10 +8,12 @@ class App extends Component {
     this.state = {
       boards: [],
       isLoaded: false,
-      showComponent: false
+      showComponent: false,
+      showInput: false
     }
 
-    this.displayBoard = this.displayBoard.bind(this)
+    this.setShowComponent = this.setShowComponent.bind(this)
+    this.setStateForInput = this.setStateForInput.bind(this)
   }
 
   componentDidMount(){
@@ -25,7 +27,7 @@ class App extends Component {
     })
   }
   
-  displayBoard(boardId) {
+  setShowComponent(boardId) {
     this.setState({showComponent: boardId})
 
     if (this.state.showComponent == boardId) {
@@ -33,6 +35,25 @@ class App extends Component {
     }
 
     console.log(this.state.showComponent)
+  }
+
+  addBoard(name, list){
+    fetch("http://localhost:8081/add_board", {
+      method: 'POST',
+      body: JSON.stringify({
+        Name: '',
+      }),
+    })
+    .then(res => res.json())
+    .catch(error => {
+      console.log(error)
+    })
+  }
+
+  setStateForInput(){
+    this.setState({
+      showInput: true
+    })
   }
 
   render() {
@@ -44,7 +65,7 @@ class App extends Component {
 
       boardsName = this.state.boards?.map(b => {
         return <div>
-            <p onClick={() => this.displayBoard(b.boardId)}>{b.name}</p>
+            <p onClick={() => this.setShowComponent(b.boardId)}>{b.name}</p>
             {this.state.showComponent && <Board data={b} />}
           </div>
           
@@ -55,6 +76,10 @@ class App extends Component {
       return (
         <div>
           <Navbar />
+          <p onClick={() => this.setStateForInput()}>Add Board</p>
+          {this.state.showInput ?
+            <input type="text" name='text' placeholder='Border Name'/> : <div></div>
+          }
           <div className='container'>
             {boardsName}
           </div>

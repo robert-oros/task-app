@@ -36,7 +36,7 @@ var db = []Board{}
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }
-	
+
 func init_database() {
 	card1 := Card{BoardId: 1, ListId:1, CardId: 1, Text: "Card"}
 	card2 := Card{BoardId: 1, ListId:1, CardId: 2, Text: "Card"}
@@ -124,6 +124,7 @@ func addBoard(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	b.BoardId = db[len(db)-1].BoardId + 1
 
 	db = append(db, b)
 	fmt.Fprintf(w, "Board: %+v\n", b)
