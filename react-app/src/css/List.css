@@ -1,14 +1,14 @@
 .list-container {
-    background-color: #18beff73;
-    -webkit-box-shadow: 5px 5px 29px -7px rgba(0,0,0,0.75);
+    background-color: #00b7ff;
+    /* -webkit-box-shadow: 5px 5px 29px -7px rgba(0,0,0,0.75);
     -moz-box-shadow: 5px 5px 29px -7px rgba(0,0,0,0.75);
-    box-shadow: 5px 5px 29px -7px rgba(0,0,0,0.75);
+    box-shadow: 5px 5px 29px -7px rgba(0,0,0,0.75); */
     margin: 10px;
     padding: 0px;
 }
 
 .list-text {
-    background-color: #0099d680;
+    background-color: #0099d6ef;
     padding: 1.5%;
     margin: 0px;
     padding-left: 20px;
