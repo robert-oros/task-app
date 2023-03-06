@@ -45,7 +45,6 @@ class App extends Component {
     this.setState({
       showInput: true
     })
-    console.log(this.state.showInput)
   }
 
   render() {
@@ -67,7 +66,7 @@ class App extends Component {
             {boardsName}
           </div>
           <p onClick={() => this.setStateForInput()}>Add board</p>
-          {this.state.showInput ? <AddInput/> : <div></div>}
+          {this.state.showInput ? <AddInput /> : <div></div>}
         </div>
       );
     } else {
