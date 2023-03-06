@@ -72,6 +72,7 @@ func existAndGetPosBoard(board_id string)(exist bool, boardPos int){
 
 // http://localhost:8081/edit_board?id=1
 func editBoard(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	if r.Method == http.MethodGet {
 		id := r.URL.Query().Get("id")
 		
@@ -117,6 +118,7 @@ func editBoard(w http.ResponseWriter, r *http.Request) {
 // http://localhost:8081/add_board
 // {"id": 2, "name": "secondBoard","lists": []}
 func addBoard(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	var b Board
 
 	err := json.NewDecoder(r.Body).Decode(&b)
@@ -132,6 +134,7 @@ func addBoard(w http.ResponseWriter, r *http.Request) {
 
 // http://localhost:8081/remove_board?id=2
 func delBoard(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	if r.Method == http.MethodDelete {
 		id := r.URL.Query().Get("id")
 
@@ -178,6 +181,7 @@ func getListPosById(board_pos int, list_id string) (exist bool, listPos int) {
 // http://localhost:8081/add_card
 // {"boardId": 1,"listId": 3,"title": "thirdList","cards": []}
 func addList(w http.ResponseWriter, r *http.Request){
+	enableCors(&w)
 	var l List
 
 	err := json.NewDecoder(r.Body).Decode(&l)
@@ -200,6 +204,7 @@ func addList(w http.ResponseWriter, r *http.Request){
 
 // http://localhost:8081/edit_list?listId=2&boardId=2
 func editList(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	if r.Method == http.MethodGet {
 		list_id := r.URL.Query().Get("listId")
 		board_id := r.URL.Query().Get("boardId")
@@ -256,6 +261,7 @@ func editList(w http.ResponseWriter, r *http.Request) {
 
 // {"boardId":1,"listId":1}
 func removeList(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	if r.Method == http.MethodDelete {
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
@@ -302,6 +308,7 @@ func getCardPosById(board_pos, list_pos int, card_id string) (exist bool, cardPo
 // http://localhost:8081/add_card
 // {"boardId": 1,"listId": 2,"cardId":4, "text": ""}
 func addCard(w http.ResponseWriter, r *http.Request){
+	enableCors(&w)
 	var c Card
 
 	err := json.NewDecoder(r.Body).Decode(&c)
@@ -326,6 +333,7 @@ func addCard(w http.ResponseWriter, r *http.Request){
 
 // http://localhost:8081/edit_card?boardId=1&listId=1&cardId=1
 func editCard(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	if r.Method == http.MethodGet {
 		list_id := r.URL.Query().Get("listId")
 		board_id := r.URL.Query().Get("boardId")
@@ -384,6 +392,7 @@ func editCard(w http.ResponseWriter, r *http.Request) {
 
 // {"boardId":1,"cardId":3,"listId":2}
 func removeCard(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error reading body: %v", err)
