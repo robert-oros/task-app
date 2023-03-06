@@ -8,9 +8,10 @@ class List extends React.Component {
     this.state = {
       dragged: false
     }
+    this.dragStart = this.dragStart.bind(this)
   }
 
-  dragStart = (e) => {
+  dragStart(e) {
     this.setState({
       dragged: e.target
     })
@@ -20,6 +21,9 @@ class List extends React.Component {
     
   dragEnd = (e) => {
     e.target.classList.remove("dragging");
+    this.setState({
+      dragged: e.target
+    })
   }
     
   dragOver = (e) => {
@@ -27,14 +31,14 @@ class List extends React.Component {
   }
   
   dragEnter = (e) => {
-    if (e.target.classList.contains("dropzone")) {
-      console.log("contains")
-      e.target.classList.add("dragover");
-    }
+    console.log("enter", e.target)
+    // if (e.target.classList.contains("dropzone")) {
+    //   e.target.classList.add("dragover");
+    // }
   }
 
   dragLeave = (e) => {
-    console.log(e.target)
+    console.log("leave", e.target)
     // if (e.target.classList.contains("dropzone")) {
     //   e.target.classList.remove("dragover");
     // }
@@ -43,17 +47,16 @@ class List extends React.Component {
   drop = (e) => {
     e.preventDefault();
 
-    if (e.target.classList.contains("dropzone")) {
-      let parent = e.target.parentNode.parentNode.parentNode.parentNode
-      let elemToRm = parent.querySelector(".dragging")
+    if (e.target.classList.contains("dropzone-li")) {
+      let parent = e.target.parentNode.parentNode
+      console.log(this.state.dragged)
+      // let elemToRm = parent.querySelector(".dragging")
       
-      e.target.classList.remove("dragover");
-
+      // e.target.classList.remove("dragover");
+      // console.log(parent)
       // document.body.remove(elemToRm)
-      
-      // e.target.parentNode.parentNode.appendChild(this.state.dragged);
+      // e.target.parentNode.parentNode.parentNode.parentNode.appendChild(this.state.dragged);
     }
-
   }
 
   render() {
@@ -63,7 +66,7 @@ class List extends React.Component {
         dragStart={this.dragStart} 
         dragEnd={this.dragEnd}
         dragOver={this.dragOver}
-        // dragEnter={this.dragEnter}
+        dragEnter={this.dragEnter}
         dragLeave={this.dragLeave}
         drop={this.drop}
       />
