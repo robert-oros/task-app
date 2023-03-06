@@ -38,10 +38,16 @@ class App extends Component {
   }
 
   
+  deleteMe(id){
+    fetch("http://localhost:8081/remove_board?id=" + id, {
+      method: "DELETE"
+    })
+    .then(res=> res.json())
+  }
 
   setStateForInput(){
     this.setState({
-      showInput: true
+      showInput: !this.state.showInput
     })
   }
 
@@ -50,7 +56,8 @@ class App extends Component {
     if (typeof this.state.boards !== 'undefined') {
       boardsName = this.state.boards?.map(b => {
         return <div className='simple-board'>
-            <p className='simple-board-name' onClick={() => this.setShowComponent(b.boardId)}>{b.name}</p>
+            <p className='simple-board-name' onClick={() => this.setShowComponent(b.boardId)}>{b.name} </p>
+            
             {this.state.showComponent && (b.boardId == this.state.showComponent) && <Board data={b} />}
           </div>
       })
