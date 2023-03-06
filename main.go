@@ -134,8 +134,8 @@ func addBoard(w http.ResponseWriter, r *http.Request) {
 
 // http://localhost:8081/remove_board?id=2
 func delBoard(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
 	if r.Method == http.MethodDelete {
+		enableCors(&w)
 		id := r.URL.Query().Get("id")
 
 		existBoard, boardPos := existAndGetPosBoard(id)

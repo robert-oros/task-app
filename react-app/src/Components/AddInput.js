@@ -15,14 +15,14 @@ function addBoard(name){
 }
 
 class AddInput extends Component {
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.state = {
             value: "",
-            isLoadding: false
+            isOpen: false
         }
         this.handleChange = this.handleChange.bind(this)
-        this.setStateforLoadding = this.setStateforLoadding.bind(this)
+        this.setStateOpenPopup = this.setStateOpenPopup.bind(this)
     }
     handleChange(event) {
         this.setState({
@@ -30,9 +30,9 @@ class AddInput extends Component {
         })
     }
 
-    setStateforLoadding(){
+    setStateOpenPopup(){
         this.setState({
-            isLoadding: true
+            isOpen: !this.state.isOpen
         })
     }
 
@@ -40,8 +40,8 @@ class AddInput extends Component {
         return (
             <div>
                 <input type="text" value={this.state.value} placeholder="Border Name" onChange={this.handleChange}/>
-                <input type="submit" value="Submit" onClick={this.setStateforLoadding}/>
-                {this.state.isLoadding ? addBoard(this.state.value) : <div></div>}
+                <input type="submit" value="Submit" onClick={this.setStateOpenPopup}/>
+                {this.state.isOpen ? addBoard(this.state.value) : <div></div>}
           
             </div>
         )

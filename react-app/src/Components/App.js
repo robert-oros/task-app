@@ -3,6 +3,9 @@ import Board from './Board';
 import Navbar from './Navbar'
 import '../css/App.css'
 import AddInput from './AddInput';
+import 'reactjs-popup/dist/index.css'
+import Popup from './Popup.js';
+import "../css/style.css"
 
 class App extends Component {
   constructor(){
@@ -11,11 +14,13 @@ class App extends Component {
       boards: [],
       isLoaded: false,
       showComponent: false,
-      showInput: false
+      showInput: false,
+      isOpenPopup: false
     }
 
     this.setShowComponent = this.setShowComponent.bind(this)
     this.setStateForInput = this.setStateForInput.bind(this)
+    this.setPopupState = this.setPopupState.bind(this)
   }
 
   componentDidMount(){
@@ -36,7 +41,9 @@ class App extends Component {
       this.setState({showComponent: false})
     }
   }
-
+  setPopupState(){
+    this.setState({isOpenPopup: !this.state.isOpenPopup})
+  }
   
   deleteMe(id){
     fetch("http://localhost:8081/remove_board?id=" + id, {
@@ -71,7 +78,7 @@ class App extends Component {
             {boardsName}
             <div className='add-board-container'>
               <button onClick={() => this.setStateForInput()}>Add board</button>
-              {this.state.showInput ? <AddInput/> : <div></div>}
+              {this.state.showInput ? <Popup content={<><AddInput close={this.setStateForInput}/></>}  handleClose={this.setStateForInput} /> : <div></div>}
             </div>  
           </div>
         </div>
