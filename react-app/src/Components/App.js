@@ -64,9 +64,11 @@ class App extends Component {
           <Navbar />
           <div className='container'>
             {boardsName}
+            <div className='add-board-container'>
+              <button onClick={() => this.setStateForInput()}>Add board</button>
+              {this.state.showInput ? <AddInput/> : <div></div>}
+            </div>  
           </div>
-          <p onClick={() => this.setStateForInput()}>Add board</p>
-          {this.state.showInput ? <AddInput /> : <div></div>}
         </div>
       );
     } else {

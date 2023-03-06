@@ -7,6 +7,16 @@
     color: rgb(255, 253, 253);
 }
 
+.loading-text {
+    text-align: center;
+    padding-top: 50%;
+    padding-bottom: 50%;
+}
+
+.add-board-container {
+    margin-left:10px;
+}
+
 ul {
     list-style-type: none;
 }
