@@ -35,8 +35,6 @@ class App extends Component {
     if (this.state.showComponent == boardId) {
       this.setState({showComponent: false})
     }
-
-    console.log(this.state.showComponent)
   }
 
   
