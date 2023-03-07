@@ -3,16 +3,13 @@ import '../css/List.css'
 import React from 'react';
 
 let dragged
+
 class List extends React.Component {
   constructor(){
     super()
-    // this.state = {
-    //   dragged: false
-    // }
-    this.dragStart = this.dragStart.bind(this)
   }
 
-  dragStart(e) {
+  dragStart = (e) => {
     dragged = e.target
     e.target.classList.add("dragging");
   }
@@ -30,6 +27,7 @@ class List extends React.Component {
   
   dragEnter = (e) => {
     if (e.target.classList.contains("dropzone")) {
+      // afterBeforElem = e.target
       e.target.classList.add("dragover");
     }
   }
@@ -54,55 +52,57 @@ class List extends React.Component {
       e.target.classList.remove("dragover");
       parentOfTarget.appendChild(dragged);
     } else {
-      parentOfTarget = e.target
-      elemToRemove = parentOfTarget.parentNode.parentNode.parentNode.querySelector(".dragging")
-      
-      parentOfDragged = elemToRemove.parentNode
-      parentOfDragged.removeChild(elemToRemove)
-      e.target.classList.remove("dragover");
-
-      parentOfTarget.appendChild(dragged)
+      if (e.target.classList.contains("dropzone")) {
+        parentOfTarget = e.target
+        elemToRemove = parentOfTarget.parentNode.parentNode.parentNode.querySelector(".dragging")
+        
+        parentOfDragged = elemToRemove.parentNode
+        parentOfDragged.removeChild(elemToRemove)
+        e.target.classList.remove("dragover");
+      }
     }
   }
 
   render() {
-    let card
-    console.log(this.props.data)
-    if (this.props.data.cards !== null) {
-      card = this.props.data.cards.map(c => {
-        return <Card 
-          data={c} 
-          dragStart={this.dragStart} 
-          dragEnd={this.dragEnd}
-          dragOver={this.dragOver}
-          dragEnter={this.dragEnter}
-          dragLeave={this.dragLeave}
-          drop={this.drop}
-        />
+    const cards = this.props.data.cards.map(c => {
+      return <Card 
+        data={c} 
+        dragStart={this.dragStart} 
+        dragEnd={this.dragEnd}
+        dragOver={this.dragOver}
+        dragEnter={this.dragEnter}
+        dragLeave={this.dragLeave}
+        drop={this.drop}
+      />
     })
-  }
 
+    // addTodo() {
+
+    // }
+
+    // deleteTodo() {
+
+    // }
     return (
-        <div class="col list-container">
-          <ul className='list-text'>
-            {/* <li>
-              <span className="label">{props.data.listId}</span>
-            </li> */}
-            <li>
-              <span className="label">{this.props.data.title}</span>
-            </li>
-          </ul>
+      <div class="col list-container">
+        <ul className='list-text'>
+          {/* <li>
+            <span className="label">{props.data.listId}</span>
+          </li> */}
+          <li>
+            <span className="label">{this.props.data.title}</span>
+          </li>
+        </ul>
 
-          <div>
-            <div className="card-list dropzone" 
-              onDragOver={(e) => this.dragOver(e)}
-              onDrop={(e) => this.drop(e)}
-            > 
-              {card}
-            </div>
-            <button className='todo-add' type="button">Adauga Todo</button>
+        <div>
+          <div className="card-list dropzone" 
+            onDrop={(e) => this.drop(e)}
+            onDragOver={(e) => this.dragOver(e)}> 
+            {cards}
           </div>
+          <button className='todo-add' type="button">Adauga Todo</button>
         </div>
+      </div>
     );
   }
 }

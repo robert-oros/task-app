@@ -6,7 +6,7 @@ class Card extends Component {
     return (
       <ul 
         draggable
-        className="card-text-container"
+        className="card-text-container dropzone"
         onDragStart={(e) => this.props.dragStart(e)}
         onDragEnd={(e) => this.props.dragEnd(e)}
         onDragOver={(e) => this.props.dragOver(e)}
