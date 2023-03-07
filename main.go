@@ -328,14 +328,23 @@ func addCard(w http.ResponseWriter, r *http.Request){
 
 	_, boardPos := getBoardPosById(strconv.Itoa(c.BoardId))
 	exist, listPos := getListPosById(boardPos, strconv.Itoa(c.ListId)) 
+
 	if exist {
+		card := db[boardPos].Lists[listPos].Cards
+
+		if len(card) == 0 {
+			c.CardId = 1
+		} else {
+			cardId := card[len(card)-1].CardId + 1
+			c.CardId = cardId
+		}
+		
 		db[boardPos].Lists[listPos].Cards = append(db[boardPos].Lists[listPos].Cards, c)
 		w.WriteHeader(http.StatusAccepted)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}
 
-	db = append(db, db[boardPos])
 	fmt.Fprintf(w, "Board: %+v\n", db)
 
 }

@@ -1,12 +1,20 @@
 import Card from './Card';
 import '../css/List.css'
 import React from 'react';
+import Popup from "./Popup.js"
+import AddCard from './AddCard';
 
 let dragged
 
 class List extends React.Component {
   constructor(){
     super()
+    this.state = {
+      showPopup: false
+    }
+  }
+  handleClick() {
+    this.setState({showPopup: !this.state.showPopup})
   }
 
   dragStart = (e) => {
@@ -64,7 +72,10 @@ class List extends React.Component {
   }
 
   render() {
-    const cards = this.props.data.cards.map(c => {
+    let card
+    console.log(this.props.data)
+    if (this.props.data.cards !== null) {
+      card = this.props.data.cards.map(c => {
       return <Card 
         data={c} 
         dragStart={this.dragStart} 
@@ -75,6 +86,7 @@ class List extends React.Component {
         drop={this.drop}
       />
     })
+  }
 
     // addTodo() {
 
@@ -98,13 +110,15 @@ class List extends React.Component {
           <div className="card-list dropzone" 
             onDrop={(e) => this.drop(e)}
             onDragOver={(e) => this.dragOver(e)}> 
-            {cards}
+            {card}
           </div>
-          <button className='todo-add' type="button">Adauga Todo</button>
+          <button className='todo-add' onClick={this.handleClick} type="button">Adauga Todo</button>
+          {this.state.showPopup ? <Popup content={<><AddCard listId={this.props.data.listId} boardId={this.props.data.boardId} close={true}/></>}  handleClose={this.handleClick} />: <div></div>}
         </div>
       </div>
     );
   }
 }
+
   
 export default List;
