@@ -42,21 +42,27 @@ class List extends React.Component {
   
   drop = (e) => {
     e.preventDefault();
-    console.log(e.target)
+    let parentOfTarget, parentOfDragged, elemToRemove;
 
-    if (e.target.classList.contains("dropzone")) {
-      let parentOfTargetElem = e.target.parentNode.parentNode
-
-      let elemToRm = parentOfTargetElem.parentNode.parentNode.parentNode.querySelector(".dragging")
-      let parentOfElemToRm = elemToRm.parentNode
-      parentOfElemToRm.removeChild(elemToRm)
-      console.log(dragged, parentOfElemToRm)
-
+    if (e.target.hasChildNodes()) {
+      parentOfTarget = e.target.parentNode.parentNode
+      elemToRemove = parentOfTarget.parentNode.parentNode.parentNode.querySelector(".dragging")
+      
+      parentOfDragged = elemToRemove.parentNode
+      parentOfDragged.removeChild(elemToRemove)
+      
+      e.target.classList.remove("dragover");
+      parentOfTarget.appendChild(dragged);
+    } else {
+      parentOfTarget = e.target
+      elemToRemove = parentOfTarget.parentNode.parentNode.parentNode.querySelector(".dragging")
+      
+      parentOfDragged = elemToRemove.parentNode
+      parentOfDragged.removeChild(elemToRemove)
       e.target.classList.remove("dragover");
 
-      parentOfTargetElem.appendChild(dragged);
+      parentOfTarget.appendChild(dragged)
     }
-
   }
 
   render() {
@@ -84,7 +90,10 @@ class List extends React.Component {
           </ul>
 
           <div>
-            <div className="card-list dropzone" onDragOver={(e) => this.dragOver(e)}> 
+            <div className="card-list dropzone" 
+              onDragOver={(e) => this.dragOver(e)}
+              onDrop={(e) => this.props.drop(e)}
+            > 
               {cards}
             </div>
             <button className='todo-add' type="button">Adauga Todo</button>
