@@ -66,17 +66,21 @@ class List extends React.Component {
   }
 
   render() {
-    const cards = this.props.data.cards.map(c => {
-      return <Card 
-        data={c} 
-        dragStart={this.dragStart} 
-        dragEnd={this.dragEnd}
-        dragOver={this.dragOver}
-        dragEnter={this.dragEnter}
-        dragLeave={this.dragLeave}
-        drop={this.drop}
-      />
+    let card
+    console.log(this.props.data)
+    if (this.props.data.cards !== null) {
+      card = this.props.data.cards.map(c => {
+        return <Card 
+          data={c} 
+          dragStart={this.dragStart} 
+          dragEnd={this.dragEnd}
+          dragOver={this.dragOver}
+          dragEnter={this.dragEnter}
+          dragLeave={this.dragLeave}
+          drop={this.drop}
+        />
     })
+  }
 
     return (
         <div class="col list-container">
@@ -94,7 +98,7 @@ class List extends React.Component {
               onDragOver={(e) => this.dragOver(e)}
               onDrop={(e) => this.drop(e)}
             > 
-              {cards}
+              {card}
             </div>
             <button className='todo-add' type="button">Adauga Todo</button>
           </div>

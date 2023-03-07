@@ -4,7 +4,6 @@ function addList(name, boardId){
     fetch("http://localhost:8081/add_list", {
       method: 'POST',
       body: JSON.stringify({
-        ListId:1,
         BoardId: boardId,
         Title: name
       }),
@@ -26,8 +25,6 @@ function AddList(props){
         setValue(event.target.value)
     }
 
-
-
     const handleSubmit = () => {
         setClose(!close)
     }
@@ -37,7 +34,7 @@ function AddList(props){
             {console.log(close)}
             <input type="text" value={name} placeholder="List Name" onChange={handleChange}/>
             <input type="submit" value="Submit" onClick={handleSubmit}/>
-            {close === false ? addList(name, boardId) : <div>else</div>}
+            {close === false ? addList(name, boardId) : <div></div>}
       
         </div>
     )

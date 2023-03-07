@@ -5,14 +5,13 @@ import AddList from "./AddList"
 import Popup from "./Popup";
 
 function Board(props) {
-  const [ showPopup, setShowPopup] = useState(false)
   let lists;
   if (props.data.lists !== null) {
     lists = props.data.lists.map(l => {
       return <List data={l}/>
     })
   }
-  
+  const [ showPopup, setShowPopup] = useState(false)
   const handleClick = () => {
     setShowPopup(!showPopup)
   }

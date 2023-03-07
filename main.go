@@ -207,7 +207,6 @@ func addList(w http.ResponseWriter, r *http.Request){
 		db[boardPos].Lists = append(db[boardPos].Lists, l)
 	}
 	
-	db = append(db, db[boardPos])
 	fmt.Fprintf(w, "Board: %+v\n", db)
 }
 
