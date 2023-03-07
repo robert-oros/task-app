@@ -19,7 +19,7 @@ class AddInput extends Component {
         super(props)
         this.state = {
             value: "",
-            isOpen: false
+            isOpen: true
         }
         this.handleChange = this.handleChange.bind(this)
         this.setStateOpenPopup = this.setStateOpenPopup.bind(this)
@@ -41,7 +41,7 @@ class AddInput extends Component {
             <div>
                 <input type="text" value={this.state.value} placeholder="Border Name" onChange={this.handleChange}/>
                 <input type="submit" value="Submit" onClick={this.setStateOpenPopup}/>
-                {this.state.isOpen ? addBoard(this.state.value) : <div></div>}
+                {this.state.isOpen === false ? addBoard(this.state.value) : <div></div>}
           
             </div>
         )

@@ -178,7 +178,7 @@ func getListPosById(board_pos int, list_id string) (exist bool, listPos int) {
 	return exist, listPos
 }
 
-// http://localhost:8081/add_card
+// http://localhost:8081/add_list
 // {"boardId": 1,"listId": 3,"title": "thirdList","cards": []}
 func addList(w http.ResponseWriter, r *http.Request){
 	enableCors(&w)
@@ -191,13 +191,17 @@ func addList(w http.ResponseWriter, r *http.Request){
 	}
 
 	boardId := strconv.Itoa(l.BoardId)
+	// BoardId := l.BoardId
 
 	exist, boardPos := getBoardPosById(boardId)
 	if exist {
-		db[boardPos].Lists = append(db[boardPos].Lists, l)
+		// l.ListId = db[len(db)-1].boardId
+		// bradId := db[boardPos].Lists[len()-1]
+		// fmt.Print(bradId)
+		// db[boardPos].Lists = append(db[boardPos].Lists, l)
 	}
-
-	db = append(db, db[boardPos])
+	
+	// db = append(db, db[boardPos])
 	fmt.Fprintf(w, "Board: %+v\n", db)
 }
 

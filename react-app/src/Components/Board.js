@@ -1,12 +1,20 @@
 import List from "./List";
 import '../css/Board.css'
+import { useState } from "react";
+import AddList from "./AddList"
+import Popup from "./Popup";
 
 function Board(props) {
+  const [ showPopup, setShowPopup] = useState(false)
   let lists;
   if (props.data.lists !== null) {
     lists = props.data.lists.map(l => {
       return <List data={l}/>
     })
+  }
+  
+  const handleClick = () => {
+    setShowPopup(!showPopup)
   }
   
   return (
@@ -21,7 +29,8 @@ function Board(props) {
       </ul> */}
 
       <div class="container">
-      <button>Adauga Lista</button>
+      <button onClick={handleClick}>Adauga Lista</button>
+      {showPopup ? <Popup content={<><AddList boardId={props.data.boardId} close={true}/></>}  handleClose={handleClick} />: <div></div>}
         <div class="row align-items-center">
           {lists}
         </div>
