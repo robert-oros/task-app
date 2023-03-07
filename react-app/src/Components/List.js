@@ -2,20 +2,18 @@ import Card from './Card';
 import '../css/List.css'
 import React from 'react';
 
+let dragged
 class List extends React.Component {
   constructor(){
     super()
-    this.state = {
-      dragged: false
-    }
+    // this.state = {
+    //   dragged: false
+    // }
     this.dragStart = this.dragStart.bind(this)
   }
 
   dragStart(e) {
-    this.setState({
-      dragged: e.target
-    })
-
+    dragged = e.target
     e.target.classList.add("dragging");
   }
     
@@ -31,32 +29,34 @@ class List extends React.Component {
   }
   
   dragEnter = (e) => {
-    console.log("enter", e.target)
-    // if (e.target.classList.contains("dropzone")) {
-    //   e.target.classList.add("dragover");
-    // }
+    if (e.target.classList.contains("dropzone")) {
+      e.target.classList.add("dragover");
+    }
   }
 
   dragLeave = (e) => {
-    console.log("leave", e.target)
-    // if (e.target.classList.contains("dropzone")) {
-    //   e.target.classList.remove("dragover");
-    // }
+    if (e.target.classList.contains("dropzone")) {
+      e.target.classList.remove("dragover");
+    }
   }
   
   drop = (e) => {
     e.preventDefault();
+    console.log(e.target)
 
-    if (e.target.classList.contains("dropzone-li")) {
-      let parent = e.target.parentNode.parentNode
-      console.log(this.state.dragged)
-      // let elemToRm = parent.querySelector(".dragging")
-      
-      // e.target.classList.remove("dragover");
-      // console.log(parent)
-      // document.body.remove(elemToRm)
-      // e.target.parentNode.parentNode.parentNode.parentNode.appendChild(this.state.dragged);
+    if (e.target.classList.contains("dropzone")) {
+      let parentOfTargetElem = e.target.parentNode.parentNode
+
+      let elemToRm = parentOfTargetElem.parentNode.parentNode.parentNode.querySelector(".dragging")
+      let parentOfElemToRm = elemToRm.parentNode
+      parentOfElemToRm.removeChild(elemToRm)
+      console.log(dragged, parentOfElemToRm)
+
+      e.target.classList.remove("dragover");
+
+      parentOfTargetElem.appendChild(dragged);
     }
+
   }
 
   render() {
@@ -83,13 +83,11 @@ class List extends React.Component {
             </li>
           </ul>
 
-          <div className="card-list">
-            {cards}
-
-            <ul className="card-text-container">
-              <button type="button">Adauga Todo</button>
-            </ul>
-
+          <div>
+            <div className="card-list dropzone" onDragOver={(e) => this.dragOver(e)}> 
+              {cards}
+            </div>
+            <button className='todo-add' type="button">Adauga Todo</button>
           </div>
         </div>
     );

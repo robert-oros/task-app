@@ -11,13 +11,13 @@ class Card extends Component {
         onDragEnd={(e) => this.props.dragEnd(e)}
         onDragOver={(e) => this.props.dragOver(e)}
         onDragEnter={(e) => this.props.dragEnter(e)}
-        // onDragLeave={(e) => this.props.dragLeave(e)}
+        onDragLeave={(e) => this.props.dragLeave(e)}
         onDrop={(e) => this.props.drop(e)}
       >
-        {/* <li>
-          <span className="label">{props.data.cardId}</span>
-        </li> */}
-        <li className='dropzone-li'>
+        <li className='card-id'>
+          <span className="label">{this.props.data.cardId}</span>
+        </li>
+        <li className='dropzone'>
           <span className="card-text">{this.props.data.text}</span>
         </li>
       </ul>
