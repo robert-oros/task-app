@@ -195,13 +195,19 @@ func addList(w http.ResponseWriter, r *http.Request){
 
 	exist, boardPos := getBoardPosById(boardId)
 	if exist {
-		// l.ListId = db[len(db)-1].boardId
-		// bradId := db[boardPos].Lists[len()-1]
-		// fmt.Print(bradId)
-		// db[boardPos].Lists = append(db[boardPos].Lists, l)
+		list := db[boardPos].Lists
+		fmt.Print(list)
+		if len(list) == 0 {
+			l.ListId = 1
+		}else {
+			lastId := list[len(list)-1].ListId + 1
+			l.ListId = lastId
+		}
+		
+		db[boardPos].Lists = append(db[boardPos].Lists, l)
 	}
 	
-	// db = append(db, db[boardPos])
+	db = append(db, db[boardPos])
 	fmt.Fprintf(w, "Board: %+v\n", db)
 }
 

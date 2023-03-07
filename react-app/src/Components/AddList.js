@@ -19,15 +19,14 @@ function AddList(props){
     
     const [close, setClose] = useState(props.close)
     const [name, setValue] = useState("")
-    const [boardId, setBoardId] = useState(props.boardId)
+
+    const boardId = props.boardId
 
     const handleChange = (event) => {
         setValue(event.target.value)
     }
 
-    const Change = (event) => {
-        setBoardId(event.target.value)
-    }
+
 
     const handleSubmit = () => {
         setClose(!close)
@@ -36,7 +35,6 @@ function AddList(props){
     return (
         <div>
             {console.log(close)}
-            <input type="text" value={boardId} placeholder="Board Id" onChange={Change}/>
             <input type="text" value={name} placeholder="List Name" onChange={handleChange}/>
             <input type="submit" value="Submit" onClick={handleSubmit}/>
             {close === false ? addList(name, boardId) : <div>else</div>}

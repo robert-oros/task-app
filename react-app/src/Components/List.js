@@ -92,7 +92,7 @@ class List extends React.Component {
           <div>
             <div className="card-list dropzone" 
               onDragOver={(e) => this.dragOver(e)}
-              onDrop={(e) => this.props.drop(e)}
+              onDrop={(e) => this.drop(e)}
             > 
               {cards}
             </div>
