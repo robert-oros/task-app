@@ -12,6 +12,7 @@ class List extends React.Component {
     this.state = {
       showPopup: false
     }
+    this.handleClick = this.handleClick.bind(this)
   }
   handleClick() {
     this.setState({showPopup: !this.state.showPopup})
@@ -75,7 +76,6 @@ class List extends React.Component {
 
   render() {
     let card
-    console.log(this.props.data)
     if (this.props.data.cards !== null) {
       card = this.props.data.cards.map(c => {
       return <Card 

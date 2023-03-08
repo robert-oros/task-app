@@ -37,7 +37,7 @@ class App extends Component {
   setShowComponent(boardId) {
     this.setState({showComponent: boardId})
 
-    if (this.state.showComponent == boardId) {
+    if (this.state.showComponent === boardId) {
       this.setState({showComponent: false})
     }
   }
@@ -65,7 +65,7 @@ class App extends Component {
         return <div className='simple-board'>
             <p className='simple-board-name' onClick={() => this.setShowComponent(b.boardId)}>{b.name} </p>
             
-            {this.state.showComponent && (b.boardId == this.state.showComponent) && <Board data={b} />}
+            {this.state.showComponent && (b.boardId === this.state.showComponent) && <Board data={b} />}
           </div>
       })
     }
