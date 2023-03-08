@@ -63,10 +63,12 @@ class List extends React.Component {
       if (e.target.classList.contains("dropzone")) {
         parentOfTarget = e.target
         elemToRemove = parentOfTarget.parentNode.parentNode.parentNode.querySelector(".dragging")
-        
+
         parentOfDragged = elemToRemove.parentNode
         parentOfDragged.removeChild(elemToRemove)
+        
         e.target.classList.remove("dragover");
+        parentOfTarget.appendChild(dragged);
       }
     }
   }
