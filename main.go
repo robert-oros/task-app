@@ -90,8 +90,8 @@ func editBoard(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusAccepted)
 		}
 		w.WriteHeader(http.StatusBadRequest)
-
 	}
+
 	// {"id": 1, "name": "newBoard","lists": [{"id": 1, "title": "list", "cards":[]}]}
 	if r.Method == http.MethodPut {
 		var b Board
@@ -110,8 +110,8 @@ func editBoard(w http.ResponseWriter, r *http.Request) {
 		}else {
 			w.WriteHeader(http.StatusBadRequest)
 		}
+
 		fmt.Fprintf(w, "db: %+v", db)
-		
 	}
 }
 
@@ -129,6 +129,7 @@ func addBoard(w http.ResponseWriter, r *http.Request) {
 	b.BoardId = db[len(db)-1].BoardId + 1
 
 	db = append(db, b)
+
 	fmt.Fprintf(w, "Board: %+v\n", b)
 }
 
@@ -196,10 +197,10 @@ func addList(w http.ResponseWriter, r *http.Request){
 	exist, boardPos := getBoardPosById(boardId)
 	if exist {
 		list := db[boardPos].Lists
-		fmt.Print(list)
+
 		if len(list) == 0 {
 			l.ListId = 1
-		}else {
+		} else {
 			lastId := list[len(list)-1].ListId + 1
 			l.ListId = lastId
 		}

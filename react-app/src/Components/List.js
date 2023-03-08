@@ -14,6 +14,7 @@ class List extends React.Component {
     }
     this.handleClick = this.handleClick.bind(this)
   }
+  
   handleClick() {
     this.setState({showPopup: !this.state.showPopup})
   }
@@ -87,16 +88,9 @@ class List extends React.Component {
         dragLeave={this.dragLeave}
         drop={this.drop}
       />
-    })
-  }
+      })
+    }
 
-    // addTodo() {
-
-    // }
-
-    // deleteTodo() {
-
-    // }
     return (
       <div class="col list-container">
         <ul className='list-text'>

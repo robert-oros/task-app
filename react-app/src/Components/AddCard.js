@@ -1,18 +1,16 @@
 import React, {useState} from "react"
 
 function addCard(name, boardId, listId){
-    fetch("http://localhost:8081/add_card", {
-      method: 'POST',
-      body: JSON.stringify({
-        BoardID: boardId,
-        ListId: listId,
-        Text: name,
-      }),
-    })
-    .then(res => console.log(res))
-    .catch(error => {
-      console.error(error)
-    })
+  fetch("http://localhost:8081/add_card", {
+    method: 'POST',
+    body: JSON.stringify({
+      BoardID: boardId,
+      ListId: listId,
+      Text: name,
+    }),
+  })
+  .then(res => console.log(res))
+  .catch(error => {console.error(error)})
 }
 
 function AddCard(props){

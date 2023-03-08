@@ -9,9 +9,7 @@ function addBoard(name){
       }),
     })
     .then(res => console.log(res))
-    .catch(error => {
-      console.error(error)
-    })
+    .catch(error => {console.error(error)})
 }
 
 class AddInput extends Component {
@@ -24,6 +22,7 @@ class AddInput extends Component {
         this.handleChange = this.handleChange.bind(this)
         this.setStateOpenPopup = this.setStateOpenPopup.bind(this)
     }
+    
     handleChange(event) {
         this.setState({
             value: event.target.value

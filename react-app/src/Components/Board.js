@@ -6,11 +6,13 @@ import Popup from "./Popup";
 
 function Board(props) {
   let lists;
+ 
   if (props.data.lists !== null) {
     lists = props.data.lists.map(l => {
       return <List data={l}/>
     })
   }
+
   const [ showPopup, setShowPopup] = useState(false)
   const handleClick = () => {
     setShowPopup(!showPopup)

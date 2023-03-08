@@ -41,6 +41,7 @@ class App extends Component {
       this.setState({showComponent: false})
     }
   }
+  
   setPopupState(){
     this.setState({isOpenPopup: !this.state.isOpenPopup})
   }
